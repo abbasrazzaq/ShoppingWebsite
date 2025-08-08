@@ -18,10 +18,16 @@ namespace ShoppingWebsite.Server.Controllers
             public required string Message { get; set; }
         }
 
-        [HttpPost("login")]
-        public IActionResult Login([FromBody] LoginRequest req)
+        public LoginService _service;
+        public AuthController(LoginService service)
         {
-            bool loginOk = (req.Username == "abbas" && req.Password == "password");
+            _service = service;
+        }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginRequest req)
+        {
+            bool loginOk = await _service.ValidateLogin(req.Username, req.Password);
             return Ok(new LoginResponse
             {
                 Success = loginOk,
