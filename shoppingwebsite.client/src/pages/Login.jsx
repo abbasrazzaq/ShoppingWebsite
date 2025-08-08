@@ -1,9 +1,11 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-function Login({ onLoginSuccess }) {
+function Login() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const navigate = useNavigate();
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -23,7 +25,7 @@ function Login({ onLoginSuccess }) {
 
             const result = await response.json();
             if (result.success) {
-                onLoginSuccess(username);
+                navigate('/shop');
             } else {
                 setError('Login failed: invalid credentials');
             }
@@ -48,17 +50,6 @@ function Login({ onLoginSuccess }) {
 
             </form>
         </div>
-
-        //<div>
-        //    <h1>Login</h1>
-        //    <label>Username: </label>
-        //    <input name="username" />
-        //    <br />
-        //    <label>Password: </label>
-        //    <input name="password" />
-        //    <br />
-        //    <button id="loginBtn">Login</button>
-        //</div>
     );
 }
 
