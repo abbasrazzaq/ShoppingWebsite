@@ -15,6 +15,7 @@ builder.Services.AddTransient<IDbConnection>(sp =>
     new SqlConnection(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<WeatherForecastService>();
 builder.Services.AddScoped<LoginService>();
+builder.Services.AddScoped<ShopService>();
 
 var app = builder.Build();
 

@@ -13,11 +13,15 @@ namespace ShoppingWebsite.Server.Controllers
             new ShopItem { Id = 3, Name = "Mayonnaise", Price = 4.25f, Stock = 124, Category = ShopItemCategory.Groceries }
         };
 
+        private readonly ShopService _shopService;
+        public ShopController(ShopService shopService) => _shopService = shopService;
+
         // TODO: Paging
         [HttpGet(Name = "GetShopItems")]
-        public /*async Task<IEnumerable<ShopItem>>*/ ActionResult<ShopItem[]> Get()
+        public async Task<IEnumerable<ShopItem>>/* ActionResult<ShopItem[]>*/ Get()
         {
-            return Ok(StubShopItems);
+            return await _shopService.GetShopItems();
+            //return Ok(StubShopItems);
         }
     }
 }
