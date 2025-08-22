@@ -16,6 +16,7 @@ builder.Services.AddTransient<IDbConnection>(sp =>
 builder.Services.AddScoped<WeatherForecastService>();
 builder.Services.AddScoped<LoginService>();
 builder.Services.AddScoped<ShopService>();
+builder.Services.AddScoped<CartService>();
 
 var app = builder.Build();
 

@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
 
-function Shop() {
+function Shop( { cartItems, setCartItems } ) {
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [cartItems, setCartItems] = useState([]);
 
     useEffect(() => {
         async function populateShopItems() {
@@ -29,7 +28,7 @@ function Shop() {
 
     if (loading) return <div>Loading items...</div>;
 
-    function addItemToCart(id) {
+    function addItemToCart(id, setCartItems) {
         setCartItems((prev) => ({
             ...prev,
             [id]: (prev[id] || 0) + 1,
@@ -43,7 +42,7 @@ function Shop() {
                 {items.map((item) => (
                     <li key={item.id}>
                         {item.name} - ${item.price.toFixed(2)}. {item.stock - (cartItems[item.id] || 0)} Left.
-                        <button onClick={() => addItemToCart(item.id)}>Add to cart</button>
+                        <button onClick={() => addItemToCart(item.id, setCartItems)}>Add to cart</button>
                     </li>
                 ))}
             </ul>
