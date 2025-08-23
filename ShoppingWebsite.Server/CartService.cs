@@ -1,5 +1,6 @@
 ﻿using System.Data;
 using Dapper;
+using Microsoft.Data.SqlClient;
 
 namespace ShoppingWebsite.Server
 {
@@ -24,9 +25,26 @@ namespace ShoppingWebsite.Server
                 CartItemList = cartItemsTable.AsTableValuedParameter("dbo.CartItemList")
             };
 
-            await _db.ExecuteAsync("BuyItems_sp",
+            try 
+            {
+                await _db.ExecuteAsync("BuyItems_sp",
                 parameters,
                 commandType: CommandType.StoredProcedure);
+            }
+            catch (SqlException ex)
+            {
+                if(ex.Number == 50000)
+                {
+                    // TODO: Log
+                    throw new InvalidOperationException("One or more items could not be processed due to insufficient stock.", ex);
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            
         }
 
         public async Task<IEnumerable<ShopItem>> GetCartItems(List<int> ids)

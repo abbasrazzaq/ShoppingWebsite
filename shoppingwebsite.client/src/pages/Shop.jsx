@@ -42,7 +42,7 @@ function Shop( { cartItems, setCartItems } ) {
                 {items.map((item) => (
                     <li key={item.id}>
                         {item.name} - ${item.price.toFixed(2)}. {item.stock - (cartItems[item.id] || 0)} Left.
-                        <button onClick={() => addItemToCart(item.id, setCartItems)}>Add to cart</button>
+                        <button disabled={(item.stock - (cartItems[item.id] || 0)) > 0 ? false : true } onClick={() => addItemToCart(item.id, setCartItems)}>Add to cart</button>
                     </li>
                 ))}
             </ul>

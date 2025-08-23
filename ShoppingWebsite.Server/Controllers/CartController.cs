@@ -18,9 +18,17 @@ namespace ShoppingWebsite.Server.Controllers
         [HttpPost("buyitems")]
         public async Task<IActionResult> BuyItems([FromBody] List<CartItem> cartItems)
         {
-            await _cartService.BuyCartItems(cartItems);
+            try
+            {
+                await _cartService.BuyCartItems(cartItems);
+            }
+            catch
+            {
+                return StatusCode(500);
+            }
 
             return Ok();
+
         }
 
         [HttpPost("getcartitems")]
