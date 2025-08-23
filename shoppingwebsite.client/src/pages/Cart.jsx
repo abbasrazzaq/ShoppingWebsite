@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-function Cart({ cartItems }) {
+function Cart({ cartItems, setCartItems }) {
     // List all the items in your cart, including how many.
     // Do a total of the cost.
     // When clicking "Checkout", your balance goes down.
@@ -9,15 +10,14 @@ function Cart({ cartItems }) {
 
     const [loading, setLoading] = useState(true);
     const [items, setItems] = useState([]);
+    const navigate = useNavigate();
+
 
     useEffect(() => {
 
         async function populateCartItems() {
             try {
-                
-                // Pull out just the ids
                 const ids = Object.keys(cartItems);
-                console.info('cart items:' + JSON.stringify(ids));
                 const response = await fetch('api/cart/getcartitems', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -29,9 +29,6 @@ function Cart({ cartItems }) {
                 }
 
                 const data = await response.json();
-                //console.info(result);
-
-                // Fill the uls
                 setItems(data);
             }
             catch (err) {
@@ -46,14 +43,45 @@ function Cart({ cartItems }) {
 
     }, []);
 
+
+    async function buyItems() {
+
+        const cartItemsAsInts = Object.keys(cartItems).map(key => ({
+            ItemId: parseInt(key, 10),
+            ItemCount: cartItems[key]
+        }));
+
+        const response = await fetch('api/cart/buyitems', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(cartItemsAsInts),
+        }); 
+
+        if (response.ok) {
+            alert('Bought items!');
+
+            setCartItems([]);
+            navigate('/shop');
+        }
+        else {
+            alert(`Fail: ${response.status}`);
+        }
+    }
+
     if(loading) return <div>Loading shopping cart... </div>
 
+    let total = 0;
+    for (let i = 0; i < items.length; i++) {
+        total += items[i].price * cartItems[items[i].id];
+    }
     return (
         <div>
             <h2>Cart</h2>
             <ul>
                 {items.map((item) => (
-                    <li key={item.id}>{item.name}</li>
+                    <li key={item.id}>
+                        Item: {item.name}, Count: {cartItems[item.id]}
+                    </li>
                 ))}
                 {/*{Object.entries(cartItems).map(([id, count]) => (*/}
                 {/*    <li key={id}>*/}
@@ -61,6 +89,9 @@ function Cart({ cartItems }) {
                 {/*    </li>*/}
                 {/*))}*/}
             </ul>
+            <h3>Total: ${total}</h3>
+
+            <button onClick={() => { buyItems(); } }>Buy Items!</button>
         </div>
        
     );
