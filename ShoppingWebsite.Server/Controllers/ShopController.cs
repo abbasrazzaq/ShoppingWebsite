@@ -10,9 +10,14 @@ namespace ShoppingWebsite.Server.Controllers
         public ShopController(ShopService shopService) => _shopService = shopService;
 
         [HttpGet(Name = "GetShopItems")]
-        public async Task<IEnumerable<ShopItem>> Get()
+        public async Task<IEnumerable<ShopItem>> Get(
+            [FromQuery] string? name,
+            [FromQuery] string? category,
+            [FromQuery] float? maxPrice,
+            [FromQuery] int? minStock
+            )
         {
-            return await _shopService.GetShopItems();
+            return await _shopService.GetShopItems(name, category, maxPrice, minStock);
         }
     }
 }

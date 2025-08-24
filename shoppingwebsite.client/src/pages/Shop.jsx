@@ -8,31 +8,32 @@ function Shop( { cartItems, setCartItems } ) {
     const [priceFilter, setPriceFilter] = useState('');
     const [stockFilter, setStockFilter] = useState('');
 
-    async function populateShopItems() {
-        try {
-            const params = new URLSearchParams();
-            if (nameFilter) params.append('name', nameFilter);
-            if (categoryFilter) params.append('category', categoryFilter);
-            if (priceFilter) params.append('maxPrice', priceFilter);
-
-            const response = await fetch(`api/shop?${params.toString()}`);
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
-            const data = await response.json();
-            setItems(data);
-        }
-        catch (err) {
-            console.error('Failed to fetch shop items: ' + err);
-        }
-        finally {
-            setLoading(false);
-        }
-
-    }
-
     useEffect(() => {
+        async function populateShopItems() {
+            try {
+                const params = new URLSearchParams();
+                if (nameFilter) params.append('name', nameFilter);
+                if (categoryFilter) params.append('category', categoryFilter);
+                if (priceFilter) params.append('maxPrice', priceFilter);
+                if (stockFilter) params.append('minStock', stockFilter);
+
+                const response = await fetch(`api/shop?${params.toString()}`);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const data = await response.json();
+                setItems(data);
+            }
+            catch (err) {
+                console.error('Failed to fetch shop items: ' + err);
+            }
+            finally {
+                setLoading(false);
+            }
+            
+        }
+
         populateShopItems();
 
-    }, []);
+    }, [nameFilter, categoryFilter, priceFilter, stockFilter]);
 
 
     if (loading) return <div>Loading items...</div>;
@@ -52,7 +53,7 @@ function Shop( { cartItems, setCartItems } ) {
                     type="text"
                     placeholder="Filter by name"
                     value={nameFilter}
-                    onChange={(e) => { setNameFilter(e.target.value); populateShopItems(); }}
+                    onChange={(e) => setNameFilter(e.target.value)}
                     style={{ marginRight: '0.5em' }}
                 />
                 <input
