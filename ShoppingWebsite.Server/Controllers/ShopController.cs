@@ -10,14 +10,20 @@ namespace ShoppingWebsite.Server.Controllers
         public ShopController(ShopService shopService) => _shopService = shopService;
 
         [HttpGet(Name = "GetShopItems")]
-        public async Task<IEnumerable<ShopItem>> Get(
+        public async Task<IActionResult> Get(
+            [FromQuery] int? pageIndex,
             [FromQuery] string? name,
             [FromQuery] string? category,
             [FromQuery] float? maxPrice,
             [FromQuery] int? minStock
             )
         {
-            return await _shopService.GetShopItems(name, category, maxPrice, minStock);
+            var result = await _shopService.GetShopItems(pageIndex ?? 0, name, category, maxPrice, minStock);
+
+            return Ok(new {
+                items = result.Items,
+                pageCount = result.PageCount
+            });
         }
     }
 }

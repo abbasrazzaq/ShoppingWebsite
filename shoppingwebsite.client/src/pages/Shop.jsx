@@ -7,6 +7,8 @@ function Shop( { cartItems, setCartItems } ) {
     const [categoryFilter, setCategoryFilter] = useState('');
     const [priceFilter, setPriceFilter] = useState('');
     const [stockFilter, setStockFilter] = useState('');
+    const [pageIndex, setPageIndex] = useState(0);
+    const [pageCount, setPageCount] = useState(0);
 
     useEffect(() => {
         async function populateShopItems() {
@@ -16,11 +18,13 @@ function Shop( { cartItems, setCartItems } ) {
                 if (categoryFilter) params.append('category', categoryFilter);
                 if (priceFilter) params.append('maxPrice', priceFilter);
                 if (stockFilter) params.append('minStock', stockFilter);
+                params.append('pageIndex', pageIndex);
 
                 const response = await fetch(`api/shop?${params.toString()}`);
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 const data = await response.json();
-                setItems(data);
+                setItems(data.items);
+                setPageCount(data.pageCount);
             }
             catch (err) {
                 console.error('Failed to fetch shop items: ' + err);
@@ -33,7 +37,7 @@ function Shop( { cartItems, setCartItems } ) {
 
         populateShopItems();
 
-    }, [nameFilter, categoryFilter, priceFilter, stockFilter]);
+    }, [nameFilter, categoryFilter, priceFilter, stockFilter, pageIndex]);
 
 
     if (loading) return <div>Loading items...</div>;
@@ -53,28 +57,40 @@ function Shop( { cartItems, setCartItems } ) {
                     type="text"
                     placeholder="Filter by name"
                     value={nameFilter}
-                    onChange={(e) => setNameFilter(e.target.value)}
+                    onChange={(e) => {
+                        setNameFilter(e.target.value);
+                        setPageIndex(0);
+                    }}
                     style={{ marginRight: '0.5em' }}
                 />
                 <input
                     type="text"
                     placeholder="Filter by category"
                     value={categoryFilter}
-                    onChange={(e) => setCategoryFilter(e.target.value)}
+                    onChange={(e) => {
+                        setCategoryFilter(e.target.value);
+                        setPageIndex(0);
+                    }}
                     style={{ marginRight: '0.5em' }}
                 />
                 <input
                     type="number"
                     placeholder="Max price"
                     value={priceFilter}
-                    onChange={(e) => setPriceFilter(e.target.value)}
+                    onChange={(e) => {
+                        setPriceFilter(e.target.value);
+                        setPageIndex(0);
+                    }}
                     style={{ marginRight: '0.5em' }}
                 />
                 <input
                     type="number"
                     placeholder="Min stock"
                     value={stockFilter}
-                    onChange={(e) => setStockFilter(e.target.value)}
+                    onChange={(e) => {
+                        setStockFilter(e.target.value);
+                        setPageIndex(0);
+                    }}
                 />
             </div>
             <ul>
@@ -85,6 +101,20 @@ function Shop( { cartItems, setCartItems } ) {
                     </li>
                 ))}
             </ul>
+            <div>
+                <button onClick={() => setPageIndex((prev) => Math.max(prev - 1, 0))}
+                    disabled={pageIndex === 0}
+                    style={{ marginRight: '0.5em' }} >
+                    Previous
+                </button>
+                <button
+                    onClick={() => setPageIndex((prev) => prev + 1)}
+                    disabled={pageIndex + 1 >= pageCount}
+                >
+                    Next
+                </button>
+                <span>{pageIndex + 1} / {pageCount}</span>
+            </div>
         </div>
     );
 
