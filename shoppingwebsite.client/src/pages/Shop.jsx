@@ -164,7 +164,7 @@ function Shop({ cartItems, setCartItems }) {
                 {items.map((item) => (
                     <li key={item.id}>
                         <img
-                            src={`/src/assets/items/${item.id}.jpg`}
+                            src={`/src/assets/items/${item.id}.png`}
                             onError={(e) => e.target.src = '/src/assets/items/placeholder.jpg' }
                             style={{ width: '100px' }}
                         >
