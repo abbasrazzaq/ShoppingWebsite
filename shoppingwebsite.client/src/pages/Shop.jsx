@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 function Shop({ cartItems, setCartItems }) {
     const [items, setItems] = useState([]);
@@ -10,7 +10,9 @@ function Shop({ cartItems, setCartItems }) {
     const [stockFilter, setStockFilter] = useState('');
     const [pageIndex, setPageIndex] = useState(0);
     const [pageCount, setPageCount] = useState(0);
-    const [showCategoryDropdown, setCategoryDropdown] = useState(false);
+    const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
+    const dropdownRef = useRef(null);
+    const buttonRef = useRef(null);
 
     useEffect(() => {
         async function populateShopItems() {
@@ -42,6 +44,25 @@ function Shop({ cartItems, setCartItems }) {
         populateShopItems();
 
     }, [nameFilter, categoryFilter, priceFilter, stockFilter, pageIndex]);
+
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (
+                dropdownRef.current &&
+                !dropdownRef.current.contains(event.target) &&
+                buttonRef.current &&
+                !buttonRef.current.contains(event.target)
+            ) {
+                setShowCategoryDropdown(false);
+            }
+        }
+
+        document.addEventListener('mousedown', handleClickOutside);
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        }
+    }, []);
 
 
     if (loading) return <div>Loading items...</div>;
@@ -75,40 +96,14 @@ function Shop({ cartItems, setCartItems }) {
                     }}
                     style={{ marginRight: '0.5em' }}
                 />
-                {/*<input*/}
-                {/*    type="text"*/}
-                {/*    placeholder="Filter by category"*/}
-                {/*    value={categoryFilter}*/}
-                {/*    onChange={(e) => {*/}
-                {/*        setCategoryFilter(e.target.value);*/}
-                {/*        setPageIndex(0);*/}
-                {/*    }}*/}
-                {/*    style={{ marginRight: '0.5em' }}*/}
-                {/*/>*/}
-
-                {/*<select*/}
-                {/*    multiple*/}
-                {/*    value={categoryFilter.map(String)}*/}
-                {/*    onChange={(e) => {*/}
-                {/*        const selectedOptions = Array.from(e.target.selectedOptions).map(option => option.value);*/}
-                {/*        setCategoryFilter(selectedOptions);*/}
-                {/*        setPageIndex(0);*/}
-                {/*    }}*/}
-                {/*    style={{ marginRight: '0.5em' }}*/}
-                {/*>*/}
-                {/*    {categoriesFilter.map(category => (*/}
-                {/*        <option key={category.id} value={String(category.id)}>*/}
-                {/*            {category.name}*/}
-                {/*        </option>*/}
-                {/*    )) }*/}
-                {/*</select>*/}
-
                 <label style={{ marginRight: '0.5em' }}>
                     Show Categories:
                 </label>
 
                 <span style={{ position: 'relative', display: 'inline-block', marginRight: '0.5em' }}>
-                    <button onClick={() => setCategoryDropdown((prev) => !prev)}
+                    <button
+                        ref={buttonRef}
+                        onClick={() => setShowCategoryDropdown((prev) => !prev)}
                         style={{ marginRight: '0.5em' }}
                     >
                         {categoryFilter.length === 0 ? 'All' : `${categoryFilter.length} Selected`}
@@ -116,11 +111,12 @@ function Shop({ cartItems, setCartItems }) {
 
                     {showCategoryDropdown && (
                         <div
+                            ref={dropdownRef}
                             style={{
                                 position: 'absolute',
                                 top: '100%',
                                 left: 0,
-                                backgroundColor: 'rgba(255 255 255 255)',
+                                backgroundColor: 'rgba(255 255 255 1)',
                                 border: '1px solid #ccc',
                                 padding: '0.5em',
                                 zIndex: 1000,
@@ -167,6 +163,12 @@ function Shop({ cartItems, setCartItems }) {
             <ul>
                 {items.map((item) => (
                     <li key={item.id}>
+                        <img
+                            src={`/src/assets/items/${item.id}.jpg`}
+                            onError={(e) => e.target.src = '/src/assets/items/placeholder.jpg' }
+                            style={{ width: '100px' }}
+                        >
+                        </img>
                         {item.name} - ${item.price.toFixed(2)}. {item.stock - (cartItems[item.id] || 0)} Left.
                         <button disabled={(item.stock - (cartItems[item.id] || 0)) > 0 ? false : true } onClick={() => addItemToCart(item.id, setCartItems)}>Add to cart</button>
                     </li>
