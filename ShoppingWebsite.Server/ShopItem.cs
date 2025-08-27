@@ -2,11 +2,11 @@
 {
     public enum ShopItemCategory
     {
-        Misc = 0,
-        Books = 1,
+        Misc =      0,
+        Books =     1,
         Groceries = 2,
-        DIY = 3,
-        Clothing = 4,
+        DIY =       3,
+        Clothing =  4
     };
 
     public class ShopItem

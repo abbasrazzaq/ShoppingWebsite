@@ -13,16 +13,17 @@ namespace ShoppingWebsite.Server.Controllers
         public async Task<IActionResult> Get(
             [FromQuery] int? pageIndex,
             [FromQuery] string? name,
-            [FromQuery] string? category,
+            [FromQuery] string? categories,
             [FromQuery] float? maxPrice,
             [FromQuery] int? minStock
             )
         {
-            var result = await _shopService.GetShopItems(pageIndex ?? 0, name, category, maxPrice, minStock);
+            var result = await _shopService.GetShopItems(pageIndex ?? 0, name, categories, maxPrice, minStock);
 
             return Ok(new {
                 items = result.Items,
-                pageCount = result.PageCount
+                pageCount = result.PageCount,
+                categoriesFilter = result.CategoriesFilter
             });
         }
     }

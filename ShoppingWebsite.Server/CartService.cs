@@ -46,7 +46,6 @@ namespace ShoppingWebsite.Server
 
             
         }
-
         public async Task<IEnumerable<ShopItem>> GetCartItems(List<int> ids)
         {
             var idsTable = new DataTable();

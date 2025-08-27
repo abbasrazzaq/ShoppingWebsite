@@ -1,21 +1,23 @@
 import { useState, useEffect } from 'react';
 
-function Shop( { cartItems, setCartItems } ) {
+function Shop({ cartItems, setCartItems }) {
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [nameFilter, setNameFilter] = useState('');
-    const [categoryFilter, setCategoryFilter] = useState('');
+    const [categoryFilter, setCategoryFilter] = useState([]);
+    const [categoriesFilter, setCategoriesFilter] = useState([]);
     const [priceFilter, setPriceFilter] = useState('');
     const [stockFilter, setStockFilter] = useState('');
     const [pageIndex, setPageIndex] = useState(0);
     const [pageCount, setPageCount] = useState(0);
+    const [showCategoryDropdown, setCategoryDropdown] = useState(false);
 
     useEffect(() => {
         async function populateShopItems() {
             try {
                 const params = new URLSearchParams();
                 if (nameFilter) params.append('name', nameFilter);
-                if (categoryFilter) params.append('category', categoryFilter);
+                if (categoryFilter.length > 0) params.append('categories', categoryFilter.join(','));
                 if (priceFilter) params.append('maxPrice', priceFilter);
                 if (stockFilter) params.append('minStock', stockFilter);
                 params.append('pageIndex', pageIndex);
@@ -23,6 +25,8 @@ function Shop( { cartItems, setCartItems } ) {
                 const response = await fetch(`api/shop?${params.toString()}`);
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 const data = await response.json();
+
+                setCategoriesFilter(data.categoriesFilter || []);
                 setItems(data.items);
                 setPageCount(data.pageCount);
             }
@@ -32,7 +36,7 @@ function Shop( { cartItems, setCartItems } ) {
             finally {
                 setLoading(false);
             }
-            
+
         }
 
         populateShopItems();
@@ -49,10 +53,18 @@ function Shop( { cartItems, setCartItems } ) {
         }));
     };
 
+    function toggleCategorySelection(categoryId) {
+        setCategoryFilter((prev) =>
+            prev.includes(categoryId)
+                ? prev.filter((id) => id !== categoryId)
+                : [...prev, categoryId]
+        );
+    }
+
     return (
         <div>
             <h2>Shop Items</h2>
-            <div style={{ marginBotton: '1em' }}>
+            <div style={{ marginBottom: '1em' }}>
                 <input
                     type="text"
                     placeholder="Filter by name"
@@ -63,16 +75,75 @@ function Shop( { cartItems, setCartItems } ) {
                     }}
                     style={{ marginRight: '0.5em' }}
                 />
-                <input
-                    type="text"
-                    placeholder="Filter by category"
-                    value={categoryFilter}
-                    onChange={(e) => {
-                        setCategoryFilter(e.target.value);
-                        setPageIndex(0);
-                    }}
-                    style={{ marginRight: '0.5em' }}
-                />
+                {/*<input*/}
+                {/*    type="text"*/}
+                {/*    placeholder="Filter by category"*/}
+                {/*    value={categoryFilter}*/}
+                {/*    onChange={(e) => {*/}
+                {/*        setCategoryFilter(e.target.value);*/}
+                {/*        setPageIndex(0);*/}
+                {/*    }}*/}
+                {/*    style={{ marginRight: '0.5em' }}*/}
+                {/*/>*/}
+
+                {/*<select*/}
+                {/*    multiple*/}
+                {/*    value={categoryFilter.map(String)}*/}
+                {/*    onChange={(e) => {*/}
+                {/*        const selectedOptions = Array.from(e.target.selectedOptions).map(option => option.value);*/}
+                {/*        setCategoryFilter(selectedOptions);*/}
+                {/*        setPageIndex(0);*/}
+                {/*    }}*/}
+                {/*    style={{ marginRight: '0.5em' }}*/}
+                {/*>*/}
+                {/*    {categoriesFilter.map(category => (*/}
+                {/*        <option key={category.id} value={String(category.id)}>*/}
+                {/*            {category.name}*/}
+                {/*        </option>*/}
+                {/*    )) }*/}
+                {/*</select>*/}
+
+                <label style={{ marginRight: '0.5em' }}>
+                    Show Categories:
+                </label>
+
+                <span style={{ position: 'relative', display: 'inline-block', marginRight: '0.5em' }}>
+                    <button onClick={() => setCategoryDropdown((prev) => !prev)}
+                        style={{ marginRight: '0.5em' }}
+                    >
+                        {categoryFilter.length === 0 ? 'All' : `${categoryFilter.length} Selected`}
+                    </button>
+
+                    {showCategoryDropdown && (
+                        <div
+                            style={{
+                                position: 'absolute',
+                                top: '100%',
+                                left: 0,
+                                backgroundColor: 'rgba(255 255 255 255)',
+                                border: '1px solid #ccc',
+                                padding: '0.5em',
+                                zIndex: 1000,
+                                minWidth: '150px',
+                            }}
+                        >
+                            {categoriesFilter.map((category) => (
+                                <div key={category.id}>
+                                    <label>
+                                        <input
+                                            type="checkbox"
+                                            checked={categoryFilter.includes(String(category.id))}
+                                            onChange={() => toggleCategorySelection(String(category.id))}
+                                        />
+                                        {category.name}
+                                    </label>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </span>
+                
+
                 <input
                     type="number"
                     placeholder="Max price"
