@@ -20,13 +20,13 @@ function App() {
                 <Route path="/shop"
                     element={
                         <PrivateRoute token={token}>
-                            <Shop cartItems={cartItems} setCartItems={setCartItems} />
+                            <Shop cartItems={cartItems} setCartItems={setCartItems} token={token} />
                         </PrivateRoute>
                     } />
                 <Route path="/cart"
                     element={
                         <PrivateRoute token={token}>
-                            <Cart cartItems={cartItems} setCartItems={setCartItems} />
+                            <Cart cartItems={cartItems} setCartItems={setCartItems} token={token} />
                         </PrivateRoute>
                     } />
             </Routes>

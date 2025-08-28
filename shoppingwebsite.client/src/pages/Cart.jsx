@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import apiFetch from '../services/api'
 
-function Cart({ cartItems, setCartItems }) {
+function Cart({ cartItems, setCartItems, token }) {
     // List all the items in your cart, including how many.
     // Do a total of the cost.
     // When clicking "Checkout", your balance goes down.
@@ -18,10 +19,9 @@ function Cart({ cartItems, setCartItems }) {
         async function populateCartItems() {
             try {
                 const ids = Object.keys(cartItems);
-                const response = await fetch('api/cart/getcartitems', {
+                const response = await apiFetch('api/cart/getcartitems', token, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(ids),
+                    body: ids,
                 });
 
                 if (!response.ok) {

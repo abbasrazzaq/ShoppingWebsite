@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ShoppingWebsite.Server.Controllers
 {
@@ -8,6 +9,7 @@ namespace ShoppingWebsite.Server.Controllers
         public required int ItemCount { get; set; }
     }
 
+    [Authorize]
     [ApiController]
     [Route("api/cart")]
     public class CartController : Controller

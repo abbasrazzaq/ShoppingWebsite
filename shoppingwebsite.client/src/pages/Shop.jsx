@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
+import apiFetch from '../services/api'
 
-function Shop({ cartItems, setCartItems }) {
+function Shop({ cartItems, setCartItems, token }) {
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [nameFilter, setNameFilter] = useState('');
@@ -23,8 +24,8 @@ function Shop({ cartItems, setCartItems }) {
                 if (priceFilter) params.append('maxPrice', priceFilter);
                 if (stockFilter) params.append('minStock', stockFilter);
                 params.append('pageIndex', pageIndex);
+                const response = await apiFetch(`api/shop?${params.toString()}`, token);
 
-                const response = await fetch(`api/shop?${params.toString()}`);
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 const data = await response.json();
 
