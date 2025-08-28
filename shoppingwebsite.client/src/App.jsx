@@ -2,21 +2,33 @@ import Login from './pages/Login.jsx'
 import Shop from './pages/Shop.jsx'
 import Cart from './pages/Cart.jsx'
 import ShopHeader from './pages/ShopHeader.jsx'
+import PrivateRoute from './components/PrivateRoute.jsx'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { useState } from 'react'
 
 function App() {
     const [cartItems, setCartItems] = useState([]);
+    const [token, setToken] = useState(null);
 
     return (
         <BrowserRouter>
             <ShopHeader />
             <Routes>
-                <Route path="/" element={<Login />} />
+                {/*Login page is public*/}
+                <Route path="/" element={<Login setToken={setToken} />} />
+
                 <Route path="/shop"
-                    element={<Shop cartItems={cartItems} setCartItems={setCartItems} />} />
+                    element={
+                        <PrivateRoute token={token}>
+                            <Shop cartItems={cartItems} setCartItems={setCartItems} />
+                        </PrivateRoute>
+                    } />
                 <Route path="/cart"
-                    element={<Cart cartItems={cartItems} setCartItems={setCartItems} />} />
+                    element={
+                        <PrivateRoute token={token}>
+                            <Cart cartItems={cartItems} setCartItems={setCartItems} />
+                        </PrivateRoute>
+                    } />
             </Routes>
         </BrowserRouter>
     );

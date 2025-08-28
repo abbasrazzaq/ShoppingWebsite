@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-function Login() {
+function Login({ setToken }) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -25,6 +25,7 @@ function Login() {
 
             const result = await response.json();
             if (result.success) {
+                setToken(result.accessToken);
                 navigate('/shop');
             } else {
                 setError('Login failed: invalid credentials');

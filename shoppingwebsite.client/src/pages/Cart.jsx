@@ -80,7 +80,13 @@ function Cart({ cartItems, setCartItems }) {
             <ul>
                 {items.map((item) => (
                     <li key={item.id}>
-                        Item: {item.name}, Count: {cartItems[item.id]}
+                        <img
+                            src={`/src/assets/items/${item.id}.png`}
+                            onError={(e) => e.target.src = '/src/assets/items/placeholder.jpg'}
+                            style={{ width: '100px' }}
+                        >
+                        </img>
+                        {item.name} - Count: {cartItems[item.id]}
                     </li>
                 ))}
                 {/*{Object.entries(cartItems).map(([id, count]) => (*/}
