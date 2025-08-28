@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace ShoppingWebsite.Server.Controllers
 {
@@ -31,6 +32,19 @@ namespace ShoppingWebsite.Server.Controllers
 
             return Ok();
 
+        }
+
+        [HttpGet("getbankbalance")]
+        public async Task<IActionResult> GetBankBalance()
+        {
+            try
+            {
+                return Ok(await _cartService.GetUserBankBalance());
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500);
+            }
         }
 
         [HttpPost("getcartitems")]

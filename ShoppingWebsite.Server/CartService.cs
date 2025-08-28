@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using System.Security.Claims;
 using Dapper;
 using Microsoft.Data.SqlClient;
 
@@ -7,7 +8,13 @@ namespace ShoppingWebsite.Server
     public class CartService
     {
         private readonly IDbConnection _db;
-        public CartService(IDbConnection db) => _db = db;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+        public CartService(IDbConnection db, IHttpContextAccessor httpContextAccessor)
+        {
+            _db = db;
+            _httpContextAccessor = httpContextAccessor;
+        }
 
         public async Task BuyCartItems(List<ShoppingWebsite.Server.Controllers.CartItem> cartItems)
         {
@@ -22,7 +29,8 @@ namespace ShoppingWebsite.Server
 
             var parameters = new
             {
-                CartItemList = cartItemsTable.AsTableValuedParameter("dbo.CartItemList")
+                CartItemList = cartItemsTable.AsTableValuedParameter("dbo.CartItemList"),
+                BankBalance = /*Get from db*/ 1200m
             };
 
             try 
@@ -43,9 +51,25 @@ namespace ShoppingWebsite.Server
                     throw;
                 }
             }
-
-            
         }
+
+        public async Task<int> GetUserBankBalance()
+        {
+            var user = _httpContextAccessor.HttpContext?.User;
+            int userId = int.Parse(user?.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+
+            var parameters = new
+            {
+                UserId = userId
+            };
+
+            return await _db.QueryFirstOrDefaultAsync<int>(
+                "GetUserBankBalance_sp",
+                parameters,
+                commandType: CommandType.StoredProcedure
+                );
+        }
+
         public async Task<IEnumerable<ShopItem>> GetCartItems(List<int> ids)
         {
             var idsTable = new DataTable();

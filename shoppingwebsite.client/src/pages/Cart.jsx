@@ -11,8 +11,22 @@ function Cart({ cartItems, setCartItems, token }) {
 
     const [loading, setLoading] = useState(true);
     const [items, setItems] = useState([]);
+    const [bankBalance, setBankBalance] = useState(null);
     const navigate = useNavigate();
 
+    useEffect(() => {
+        async function loadBankBalance() {
+            const response = await apiFetch('api/cart/getbankbalance', token);
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+
+            const data = await response.json();
+            setBankBalance(data);
+        }
+
+        loadBankBalance();
+    }, []);
 
     useEffect(() => {
 
@@ -95,7 +109,8 @@ function Cart({ cartItems, setCartItems, token }) {
                 {/*    </li>*/}
                 {/*))}*/}
             </ul>
-            <h3>Total: ${total}</h3>
+            <h3>Bill Total: ${total}</h3>
+            <h3>Your Balance: ${bankBalance}</h3>
 
             <button onClick={() => { buyItems(); } }>Buy Items!</button>
         </div>

@@ -37,14 +37,17 @@ namespace ShoppingWebsite.Server.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest req)
         {
-            if(!await _service.ValidateLogin(req.Username, req.Password))
+            int userId = await _service.ValidateLogin(req.Username, req.Password);
+            if (userId == 0)
+            {
                 return Unauthorized(new LoginResponse
                 {
                     Success = false,
                     Message = "Invalid credentials"
                 });
+            } 
 
-            var token = GenerateJwtToken(req.Username);
+            var token = GenerateJwtToken(req.Username, userId);
             return Ok(new LoginResponse 
             { 
                 Success = true,
@@ -54,15 +57,17 @@ namespace ShoppingWebsite.Server.Controllers
             });
         }
 
-        private string GenerateJwtToken(string username)
+        private string GenerateJwtToken(string username, int userId)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwt.Secret));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, username),
+                new Claim(ClaimTypes.Name, username),
+                new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+
             };
 
             var token = new JwtSecurityToken(

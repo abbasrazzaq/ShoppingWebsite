@@ -47,6 +47,8 @@ builder.Services.AddScoped<LoginService>();
 builder.Services.AddScoped<ShopService>();
 builder.Services.AddScoped<CartService>();
 
+builder.Services.AddHttpContextAccessor();
+
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
 var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtSettings>();
 
