@@ -30,14 +30,15 @@ namespace ShoppingWebsite.Server
             var parameters = new
             {
                 CartItemList = cartItemsTable.AsTableValuedParameter("dbo.CartItemList"),
-                BankBalance = /*Get from db*/ 1200m
+                BankBalance = await GetUserBankBalance()
             };
 
             try 
             {
-                await _db.ExecuteAsync("BuyItems_sp",
-                parameters,
-                commandType: CommandType.StoredProcedure);
+                await _db.ExecuteAsync(
+                    "BuyItems_sp",
+                    parameters,
+                    commandType: CommandType.StoredProcedure);
             }
             catch (SqlException ex)
             {
@@ -45,6 +46,10 @@ namespace ShoppingWebsite.Server
                 {
                     // TODO: Log
                     throw new InvalidOperationException("One or more items could not be processed due to insufficient stock.", ex);
+                }
+                else if(ex.Number == 50001)
+                {
+                    throw new InvalidOperationException("One or more items could not be processed due to insufficient balance.", ex);
                 }
                 else
                 {

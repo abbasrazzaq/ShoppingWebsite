@@ -10,10 +10,21 @@ function Cart({ cartItems, setCartItems, token }) {
     // Use the id to collect further info about the items
 
     const [loading, setLoading] = useState(true);
-    const [items, setItems] = useState([]);
+    const [cartList, setCartList] = useState([]);
     const [bankBalance, setBankBalance] = useState(null);
+    const [itemsTotal, setItemsTotal] = useState(0);
     const navigate = useNavigate();
 
+    // Calculate cart total
+    useEffect(() => {
+        let total = 0;
+        for (let i = 0; i < cartList.length; i++) {
+            total += cartList[i].price * cartItems[cartList[i].id];
+        }
+        setItemsTotal(total);
+    }, [cartList, cartItems]);
+
+    // Calculate user's bank balance
     useEffect(() => {
         async function loadBankBalance() {
             const response = await apiFetch('api/cart/getbankbalance', token);
@@ -28,6 +39,7 @@ function Cart({ cartItems, setCartItems, token }) {
         loadBankBalance();
     }, []);
 
+    // Populate list of items
     useEffect(() => {
 
         async function populateCartItems() {
@@ -43,7 +55,7 @@ function Cart({ cartItems, setCartItems, token }) {
                 }
 
                 const data = await response.json();
-                setItems(data);
+                setCartList(data);
             }
             catch (err) {
                 console.error('Failed to loading shopping cart: ' + err);
@@ -74,7 +86,7 @@ function Cart({ cartItems, setCartItems, token }) {
         if (response.ok) {
             alert('Bought items!');
 
-            setCartItems([]);
+            setCartList([]);
             navigate('/shop');
         }
         else {
@@ -84,15 +96,34 @@ function Cart({ cartItems, setCartItems, token }) {
 
     if(loading) return <div>Loading shopping cart... </div>
 
-    let total = 0;
-    for (let i = 0; i < items.length; i++) {
-        total += items[i].price * cartItems[items[i].id];
+    function removeItemFromCart(itemId, setCartItems) {
+        let itemRemoved = false;
+
+        setCartItems(prev => {
+            const currentCount = prev[itemId];
+            if (currentCount <= 1) {
+                // Remove item from cart
+                const { [itemId]: _, ...rest } = prev;
+                itemRemoved = true;
+                return rest;
+            }
+
+            return {
+                ...prev,
+                [itemId] : currentCount - 1
+            };
+        });
+
+        if (itemRemoved) {
+            setCartList(prev => prev.filter(item => item.id != itemId));
+        }
     }
+
     return (
         <div>
             <h2>Cart</h2>
             <ul>
-                {items.map((item) => (
+                {cartList.map((item) => (
                     <li key={item.id}>
                         <img
                             src={`/src/assets/items/${item.id}.png`}
@@ -101,6 +132,7 @@ function Cart({ cartItems, setCartItems, token }) {
                         >
                         </img>
                         {item.name} - Count: {cartItems[item.id]}
+                        <button onClick={() => removeItemFromCart(item.id, setCartItems) }>Remove</button>
                     </li>
                 ))}
                 {/*{Object.entries(cartItems).map(([id, count]) => (*/}
@@ -109,10 +141,14 @@ function Cart({ cartItems, setCartItems, token }) {
                 {/*    </li>*/}
                 {/*))}*/}
             </ul>
-            <h3>Bill Total: ${total}</h3>
+            <h3>Cart Total: ${itemsTotal}</h3>
             <h3>Your Balance: ${bankBalance}</h3>
 
-            <button onClick={() => { buyItems(); } }>Buy Items!</button>
+            {(itemsTotal > bankBalance) && (
+                <h4 style={{ color: "red" } }>Not enough balance!</h4>
+            )}
+
+            <button disabled={(itemsTotal > bankBalance) || cartList.length < 1} onClick={() => { buyItems(); }}>Buy Items!</button>
         </div>
        
     );
