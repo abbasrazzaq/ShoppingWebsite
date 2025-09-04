@@ -27,10 +27,13 @@ namespace ShoppingWebsite.Server
                 cartItemsTable.Rows.Add(item.ItemId, item.ItemCount);
             });
 
+            var user = _httpContextAccessor.HttpContext?.User;
+            int userId = int.Parse(user?.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+
             var parameters = new
             {
                 CartItemList = cartItemsTable.AsTableValuedParameter("dbo.CartItemList"),
-                BankBalance = await GetUserBankBalance()
+                UserId = userId
             };
 
             try 

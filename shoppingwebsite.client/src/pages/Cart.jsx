@@ -58,7 +58,7 @@ function Cart({ cartItems, setCartItems, token }) {
                 setCartList(data);
             }
             catch (err) {
-                console.error('Failed to loading shopping cart: ' + err);
+                console.error('Failed to load shopping cart: ' + err);
             }
             finally {
                 setLoading(false);
@@ -77,11 +77,16 @@ function Cart({ cartItems, setCartItems, token }) {
             ItemCount: cartItems[key]
         }));
 
-        const response = await fetch('api/cart/buyitems', {
+        const response = await apiFetch('api/cart/buyitems', token, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(cartItemsAsInts),
-        }); 
+            body: cartItemsAsInts,
+        });
+
+        //const response = await fetch('api/cart/buyitems', {
+        //    method: 'POST',
+        //    headers: { 'Content-Type': 'application/json' },
+        //    body: JSON.stringify(cartItemsAsInts),
+        //}); 
 
         if (response.ok) {
             alert('Bought items!');
