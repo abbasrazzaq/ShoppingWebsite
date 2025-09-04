@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Data;
 
-namespace ShoppingWebsite.Server
+namespace ShoppingWebsite.Server.Services
 {
     public class LoginService
     {

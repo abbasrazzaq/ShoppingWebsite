@@ -1,7 +1,7 @@
 ﻿using System.Data;
 using Dapper;
 
-namespace ShoppingWebsite.Server
+namespace ShoppingWebsite.Server.Services
 {
     public class ShopService
     {
@@ -48,7 +48,7 @@ namespace ShoppingWebsite.Server
                     .ToList()
                     .ForEach(c => categoriesTable.Rows.Add((int)c));
 
-                filterByCategories = (categoriesTable.Rows.Count > 0);
+                filterByCategories = categoriesTable.Rows.Count > 0;
 
                 parameters.Add("@Categories", categoriesTable.AsTableValuedParameter("dbo.IdList"));
             }

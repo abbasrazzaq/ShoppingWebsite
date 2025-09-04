@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ShoppingWebsite.Server.Services;
 using System.Security.Claims;
 
 namespace ShoppingWebsite.Server.Controllers

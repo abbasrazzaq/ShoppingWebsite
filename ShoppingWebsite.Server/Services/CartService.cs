@@ -3,7 +3,7 @@ using System.Security.Claims;
 using Dapper;
 using Microsoft.Data.SqlClient;
 
-namespace ShoppingWebsite.Server
+namespace ShoppingWebsite.Server.Services
 {
     public class CartService
     {
@@ -16,7 +16,7 @@ namespace ShoppingWebsite.Server
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task BuyCartItems(List<ShoppingWebsite.Server.Controllers.CartItem> cartItems)
+        public async Task BuyCartItems(List<Controllers.CartItem> cartItems)
         {
             var cartItemsTable = new DataTable();
             cartItemsTable.Columns.Add("Id", typeof(int));
