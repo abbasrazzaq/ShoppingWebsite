@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import './Login.css'
 
 function Login({ setToken }) {
     const [username, setUsername] = useState('');
@@ -37,20 +38,24 @@ function Login({ setToken }) {
     }
 
     return (
-        <div>
-            Welcome to our online shop!
-            <h1>Enter login details to enter</h1>
-            <form onSubmit={handleLogin}>
-                <label>Username:</label>
-                <input name="username" value={username} onChange={(e) => setUsername(e.target.value)} />
-                <br />
-                <label>Password:</label>
-                <input name="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-                <br />
-                {error && <div style={{ color: 'red' }}>{ error }</div>}
-                <button type="submit" id="loginBtn">Login</button>
+        <div class="login-wrap">
+            <div class="login-content">
+                <p class="welcome">Welcome to Abbas' Online Shop!</p>
+                <h1 clsas="title">Enter login details</h1>
+                <form onSubmit={handleLogin} class="login-form">
+                    <label>
+                        <span>USERNAME</span>
+                        <input name="username" value={username} onChange={(e) => setUsername(e.target.value)} />
+                    </label>
+                    <label>
+                        <span>PASSWORD</span>
+                        <input name="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                    </label>
+                    {error && <div style={{ color: 'red' }}>{error}</div>}
+                    <button type="submit" id="loginBtn">Login</button>
 
-            </form>
+                </form>
+            </div>
         </div>
     );
 }
