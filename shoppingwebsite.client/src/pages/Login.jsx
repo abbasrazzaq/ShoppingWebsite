@@ -38,13 +38,14 @@ function Login({ setToken }) {
 
     return (
         <div>
+            Welcome to our online shop!
             <h1>Login</h1>
             <form onSubmit={handleLogin}>
                 <label>Username:</label>
                 <input name="username" value={username} onChange={(e) => setUsername(e.target.value)} />
                 <br />
                 <label>Password:</label>
-                <input name="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                <input name="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
                 <br />
                 {error && <div style={{ color: 'red' }}>{ error }</div>}
                 <button type="submit" id="loginBtn">Login</button>

@@ -1,3 +1,25 @@
+USE [ShoppingWebsite];
+
+-------------------------------------------------
+------------------ CategoryTable ----------------
+-------------------------------------------------
+INSERT INTO [dbo].[CategoryTable] (Id, Category)
+VALUES	(0, 'Misc'),
+		(1, 'Books'),
+		(2, 'Groceries'),
+		(3, 'DIY'),
+		(4, 'Clothing');
+
+-------------------------------------------------
+------------------- UserTable -------------------
+-------------------------------------------------
+INSERT INTO [dbo].[UserTable] (Username, Password, BankBalance)
+VALUES('abbas', 'AQAAAAIAAYagAAAAEGJeeVmBscPi6v5BVRsEV2Hwl3JvP/EHcm1irDrpkSXV4sfYaTdpTIksQ6TD9mfLgQ==', 1500);
+-------------------------------------------------
+
+---------------------------------------------------------
+--------------------- ShopItemTable ---------------------
+---------------------------------------------------------
 --DBCC CHECKIDENT('ShopItemTable', RESEED, 0);
 
 --0	Misc
@@ -6,7 +28,7 @@
 --3	DIY
 --4	Clothing
 
-INSERT INTO [ShoppingWebsite].[dbo].[ShopItemTable]
+INSERT INTO [dbo].[ShopItemTable]
 VALUES  ('Trainers',        67,     11,         4),
         ('Hammer',          34,     19,         3),
         ('Cheese',          1.3,     7,         2),
