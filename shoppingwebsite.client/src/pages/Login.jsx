@@ -39,7 +39,7 @@ function Login({ setToken }) {
     return (
         <div>
             Welcome to our online shop!
-            <h1>Login</h1>
+            <h1>Enter login details to enter</h1>
             <form onSubmit={handleLogin}>
                 <label>Username:</label>
                 <input name="username" value={username} onChange={(e) => setUsername(e.target.value)} />

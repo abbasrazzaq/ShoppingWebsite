@@ -13,6 +13,7 @@ function ShopHeader({ cartItems }) {
         }}>
             <Link to="/shop">Browse Shop</Link>
             <Link to="/cart">Cart ({cartItemsCount} items)</Link>
+            {/*TODO: Logout*/}
         </nav>
     );
 }
