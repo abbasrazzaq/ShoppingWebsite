@@ -164,18 +164,40 @@ function Shop({ cartItems, setCartItems, token }) {
                 />
             </div>
             <ul>
-                {items.map((item) => (
-                    <li key={item.id}>
-                        <img
-                            src={`/src/assets/items/${item.id}.png`}
-                            onError={(e) => e.target.src = '/src/assets/items/placeholder.jpg' }
-                            style={{ width: '100px' }}
-                        >
-                        </img>
-                        {item.name} - ${item.price.toFixed(2)}. {item.stock - (cartItems[item.id] || 0)} Left.
-                        <button disabled={(item.stock - (cartItems[item.id] || 0)) > 0 ? false : true } onClick={() => addItemToCart(item.id, setCartItems)}>Add to cart</button>
-                    </li>
-                ))}
+
+                {items.map((item) => {
+
+                    const remainingStock = item.stock - (cartItems[item.id] || 0);
+                    const outOfStock = remainingStock < 1;
+
+                    return (
+                        <li key={item.id}>
+                            <img
+                                src={`/src/assets/items/${item.id}.png`}
+                                onError={(e) => e.target.src = '/src/assets/items/placeholder.jpg'}
+                                style={{ width: '100px' }}
+                            >
+                            </img>
+                            {item.name} - ${item.price.toFixed(2)}. {outOfStock ? <span style={ {color: 'red', font: 'bold'} }>Out of Stock</span> : `${remainingStock} Left`}.
+                            <button disabled={(item.stock - (cartItems[item.id] || 0)) > 0 ? false : true} onClick={() => addItemToCart(item.id, setCartItems)}>Add to cart</button>
+                        </li>
+                    )
+                })}
+
+
+                {/*{items.map((item) => (*/}
+                {/*    <li key={item.id}>*/}
+                {/*        <img*/}
+                {/*            src={`/src/assets/items/${item.id}.png`}*/}
+                {/*            onError={(e) => e.target.src = '/src/assets/items/placeholder.jpg' }*/}
+                {/*            style={{ width: '100px' }}*/}
+                {/*        >*/}
+                {/*        </img>*/}
+                {/*        {item.name} - ${item.price.toFixed(2)}. {item.stock - (cartItems[item.id] || 0)} Left.*/}
+                {/*        <button disabled={(item.stock - (cartItems[item.id] || 0)) > 0 ? false : true } onClick={() => addItemToCart(item.id, setCartItems)}>Add to cart</button>*/}
+                {/*    </li>*/}
+                {/*))}*/}
+
             </ul>
             <div>
                 <button onClick={() => setPageIndex((prev) => Math.max(prev - 1, 0))}
