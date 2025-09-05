@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast'
 import apiFetch from '../services/api'
 
 function Cart({ cartItems, setCartItems, token }) {
@@ -45,17 +46,19 @@ function Cart({ cartItems, setCartItems, token }) {
         async function populateCartItems() {
             try {
                 const ids = Object.keys(cartItems);
-                const response = await apiFetch('api/cart/getcartitems', token, {
-                    method: 'POST',
-                    body: ids,
-                });
+                if (ids.length > 0) {
+                    const response = await apiFetch('api/cart/getcartitems', token, {
+                        method: 'POST',
+                        body: ids,
+                    });
 
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}`);
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    setCartList(data);
                 }
-
-                const data = await response.json();
-                setCartList(data);
             }
             catch (err) {
                 console.error('Failed to load shopping cart: ' + err);
@@ -82,20 +85,14 @@ function Cart({ cartItems, setCartItems, token }) {
             body: cartItemsAsInts,
         });
 
-        //const response = await fetch('api/cart/buyitems', {
-        //    method: 'POST',
-        //    headers: { 'Content-Type': 'application/json' },
-        //    body: JSON.stringify(cartItemsAsInts),
-        //}); 
-
         if (response.ok) {
-            alert('Bought items!');
+            toast.success('Items bought! Expect delivery within 1-2 working days!');
 
-            setCartList([]);
+            setCartItems([]);
             navigate('/shop');
         }
         else {
-            alert(`Fail: ${response.status}`);
+            toast.error(`Failed to buy items! Server responded with: ${response.status}`);
         }
     }
 
@@ -140,11 +137,6 @@ function Cart({ cartItems, setCartItems, token }) {
                         <button onClick={() => removeItemFromCart(item.id, setCartItems) }>Remove</button>
                     </li>
                 ))}
-                {/*{Object.entries(cartItems).map(([id, count]) => (*/}
-                {/*    <li key={id}>*/}
-                {/*        Item ID: {id}, Count: {count}*/}
-                {/*    </li>*/}
-                {/*))}*/}
             </ul>
             <h3>Cart Total: ${itemsTotal}</h3>
             <h3>Your Balance: ${bankBalance}</h3>
