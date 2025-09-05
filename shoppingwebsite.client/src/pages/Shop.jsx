@@ -130,7 +130,10 @@ function Shop({ cartItems, setCartItems, token }) {
                                         <input
                                             type="checkbox"
                                             checked={categoryFilter.includes(String(category.id))}
-                                            onChange={() => toggleCategorySelection(String(category.id))}
+                                            onChange={() => {
+                                                toggleCategorySelection(String(category.id));
+                                                setPageIndex(0);
+                                            }}
                                         />
                                         {category.name}
                                     </label>
@@ -140,7 +143,6 @@ function Shop({ cartItems, setCartItems, token }) {
                     )}
                 </span>
                 
-
                 <input
                     type="number"
                     placeholder="Max price"
