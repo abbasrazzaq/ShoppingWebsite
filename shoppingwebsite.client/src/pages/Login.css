@@ -2,6 +2,17 @@
     outline: 1px solid rgba(0,0,255,0.2);
 }*/
 
+/* Full-screen off-white background */
+/*body, html {
+    height: 100%;
+    margin: 0;
+    background-color: #faf7f0;
+    font-family: 'Futura', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}*/
+
 .login-wrap {
     position: relative;
     padding: 2rem;

@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import apiFetch from '../services/api'
+import './Shop.css';
 
 function Shop({ cartItems, setCartItems, token }) {
     const [items, setItems] = useState([]);
@@ -84,134 +85,127 @@ function Shop({ cartItems, setCartItems, token }) {
     }
 
     return (
-        <div>
-            <h2>Shop Items</h2>
-            <div style={{ marginBottom: '1em' }}>
-                <input
-                    type="text"
-                    placeholder="Filter by name"
-                    value={nameFilter}
-                    onChange={(e) => {
-                        setNameFilter(e.target.value);
-                        setPageIndex(0);
-                    }}
-                    style={{ marginRight: '0.5em' }}
-                />
-                <label style={{ marginRight: '0.5em' }}>
-                    Show Categories:
-                </label>
-
-                <span style={{ position: 'relative', display: 'inline-block', marginRight: '0.5em' }}>
-                    <button
-                        ref={buttonRef}
-                        onClick={() => setShowCategoryDropdown((prev) => !prev)}
+        <div className="shop-wrap">
+            <div className="shop-content">
+                <div className="filters">
+                    <input
+                        type="text"
+                        placeholder="Filter by name"
+                        value={nameFilter}
+                        onChange={(e) => {
+                            setNameFilter(e.target.value);
+                            setPageIndex(0);
+                        }}
                         style={{ marginRight: '0.5em' }}
-                    >
-                        {categoryFilter.length === 0 ? 'All' : `${categoryFilter.length} Selected`}
-                    </button>
+                    />
+                    <label style={{ marginRight: '0.5em' }}>
+                        Show Categories:
+                    </label>
 
-                    {showCategoryDropdown && (
-                        <div
-                            ref={dropdownRef}
-                            style={{
-                                position: 'absolute',
-                                top: '100%',
-                                left: 0,
-                                backgroundColor: 'rgba(255 255 255 1)',
-                                border: '1px solid #ccc',
-                                padding: '0.5em',
-                                zIndex: 1000,
-                                minWidth: '150px',
-                            }}
+                    <span style={{ position: 'relative', display: 'inline-block', marginRight: '0.5em' }}>
+                        <button
+                            ref={buttonRef}
+                            onClick={() => setShowCategoryDropdown((prev) => !prev)}
+                            style={{ marginRight: '0.5em' }}
                         >
-                            {categoriesFilter.map((category) => (
-                                <div key={category.id}>
-                                    <label>
-                                        <input
-                                            type="checkbox"
-                                            checked={categoryFilter.includes(String(category.id))}
-                                            onChange={() => {
-                                                toggleCategorySelection(String(category.id));
-                                                setPageIndex(0);
-                                            }}
-                                        />
-                                        {category.name}
-                                    </label>
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                </span>
-                
-                <input
-                    type="number"
-                    placeholder="Max price"
-                    value={priceFilter}
-                    onChange={(e) => {
-                        setPriceFilter(e.target.value);
-                        setPageIndex(0);
-                    }}
-                    style={{ marginRight: '0.5em' }}
-                />
-                <input
-                    type="number"
-                    placeholder="Min stock"
-                    value={stockFilter}
-                    onChange={(e) => {
-                        setStockFilter(e.target.value);
-                        setPageIndex(0);
-                    }}
-                />
-            </div>
-            <ul>
+                            {categoryFilter.length === 0 ? 'All' : `${categoryFilter.length} Selected`}
+                        </button>
 
-                {items.map((item) => {
-
-                    const remainingStock = item.stock - (cartItems[item.id] || 0);
-                    const outOfStock = remainingStock < 1;
-
-                    return (
-                        <li key={item.id}>
-                            <img
-                                src={`/src/assets/items/${item.id}.png`}
-                                onError={(e) => e.target.src = '/src/assets/items/placeholder.jpg'}
-                                style={{ width: '100px' }}
+                        {showCategoryDropdown && (
+                            <div
+                                ref={dropdownRef}
+                                style={{
+                                    position: 'absolute',
+                                    top: '100%',
+                                    left: 0,
+                                    backgroundColor: 'rgba(255 255 255 1)',
+                                    border: '1px solid #ccc',
+                                    padding: '0.5em',
+                                    zIndex: 1000,
+                                    minWidth: '150px',
+                                }}
                             >
-                            </img>
-                            {item.name} - ${item.price.toFixed(2)}. {outOfStock ? <span style={ {color: 'red', font: 'bold'} }>Out of Stock</span> : `${remainingStock} Left`}.
-                            <button disabled={(item.stock - (cartItems[item.id] || 0)) > 0 ? false : true} onClick={() => addItemToCart(item.id, setCartItems)}>Add to cart</button>
-                        </li>
-                    )
-                })}
+                                {categoriesFilter.map((category) => (
+                                    <div key={category.id}>
+                                        <label>
+                                            <input
+                                                type="checkbox"
+                                                checked={categoryFilter.includes(String(category.id))}
+                                                onChange={() => {
+                                                    toggleCategorySelection(String(category.id));
+                                                    setPageIndex(0);
+                                                }}
+                                            />
+                                            {category.name}
+                                        </label>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </span>
 
+                    <input
+                        type="number"
+                        placeholder="Max price"
+                        value={priceFilter}
+                        onChange={(e) => {
+                            setPriceFilter(e.target.value);
+                            setPageIndex(0);
+                        }}
+                        style={{ marginRight: '0.5em' }}
+                    />
+                    <input
+                        type="number"
+                        placeholder="Min stock"
+                        value={stockFilter}
+                        onChange={(e) => {
+                            setStockFilter(e.target.value);
+                            setPageIndex(0);
+                        }}
+                    />
+                </div>
+                <div className="filters">
+                    <button onClick={() => setPageIndex((prev) => Math.max(prev - 1, 0))}
+                        disabled={pageIndex === 0}
+                        style={{ marginRight: '0.5em' }} >
+                        Previous
+                    </button>
+                    <span>{pageIndex + 1} / {pageCount}</span>
+                    <button
+                        onClick={() => setPageIndex((prev) => prev + 1)}
+                        disabled={pageIndex + 1 >= pageCount}
+                    >
+                        Next
+                    </button>
+                </div>
+                <ul className="item-list">
+                    {items.map((item) => {
 
-                {/*{items.map((item) => (*/}
-                {/*    <li key={item.id}>*/}
-                {/*        <img*/}
-                {/*            src={`/src/assets/items/${item.id}.png`}*/}
-                {/*            onError={(e) => e.target.src = '/src/assets/items/placeholder.jpg' }*/}
-                {/*            style={{ width: '100px' }}*/}
-                {/*        >*/}
-                {/*        </img>*/}
-                {/*        {item.name} - ${item.price.toFixed(2)}. {item.stock - (cartItems[item.id] || 0)} Left.*/}
-                {/*        <button disabled={(item.stock - (cartItems[item.id] || 0)) > 0 ? false : true } onClick={() => addItemToCart(item.id, setCartItems)}>Add to cart</button>*/}
-                {/*    </li>*/}
-                {/*))}*/}
+                        const remainingStock = item.stock - (cartItems[item.id] || 0);
+                        const outOfStock = remainingStock < 1;
 
-            </ul>
-            <div>
-                <button onClick={() => setPageIndex((prev) => Math.max(prev - 1, 0))}
-                    disabled={pageIndex === 0}
-                    style={{ marginRight: '0.5em' }} >
-                    Previous
-                </button>
-                <button
-                    onClick={() => setPageIndex((prev) => prev + 1)}
-                    disabled={pageIndex + 1 >= pageCount}
-                >
-                    Next
-                </button>
-                <span>{pageIndex + 1} / {pageCount}</span>
+                        return (
+                            <li key={item.id}>
+                                <img
+                                    src={`/src/assets/items/${item.id}.png`}
+                                    onError={(e) => e.target.src = '/src/assets/items/placeholder.jpg'}
+                                    style={{ width: '100px' }}
+                                >
+                                </img>
+                                <div className="item-details">
+                                    {item.name} - ${item.price.toFixed(2)}.
+                                    <div>{outOfStock ? <span className="out-of-stock">Out of Stock</span> : `${remainingStock} Left`}</div>
+
+                                </div>
+                                <button disabled={(item.stock - (cartItems[item.id] || 0)) > 0 ? false : true}
+                                    onClick={() => addItemToCart(item.id, setCartItems)}>
+                                    Add to cart
+                                </button>
+                            </li>
+                        )
+                    })}
+
+                </ul>
             </div>
         </div>
     );

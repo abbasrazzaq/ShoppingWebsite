@@ -38,11 +38,11 @@ function Login({ setToken }) {
     }
 
     return (
-        <div class="login-wrap">
-            <div class="login-content">
-                <p class="welcome">Welcome to Abbas' Online Shop!</p>
-                <h1 clsas="title">Enter login details</h1>
-                <form onSubmit={handleLogin} class="login-form">
+        <div className="login-wrap">
+            <div className="login-content">
+                <p className="welcome">Welcome to Abbas' Online Shop!</p>
+                <h1 className="title">Enter login details</h1>
+                <form onSubmit={handleLogin} className="login-form">
                     <label>
                         <span>USERNAME</span>
                         <input name="username" value={username} onChange={(e) => setUsername(e.target.value)} />
