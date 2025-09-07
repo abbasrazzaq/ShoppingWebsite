@@ -14,7 +14,7 @@ function AppContent({ cartItems, setCartItems, token, setToken }) {
     return (
         <>
             <Toaster />
-            {showHeader && <ShopHeader cartItems={cartItems} />}
+            {showHeader && <ShopHeader cartItems={ cartItems } setToken={ setToken } />}
             <Routes>
                 {/*Login page is public*/}
                 <Route path="/" element={<Login setToken={setToken} />} />
