@@ -21,7 +21,7 @@ VALUES	(0, 'Misc'),
 		(3, 'DIY'),
 		(4, 'Clothing');
 
-GO;
+GO
 
 -------------------------------------------------
 ------------------- UserTable -------------------
@@ -29,7 +29,7 @@ GO;
 INSERT INTO [dbo].[UserTable] (Username, Password, BankBalance)
 VALUES('abbas', 'AQAAAAIAAYagAAAAEGJeeVmBscPi6v5BVRsEV2Hwl3JvP/EHcm1irDrpkSXV4sfYaTdpTIksQ6TD9mfLgQ==', 1500);
 
-GO;
+GO
 -------------------------------------------------
 
 ---------------------------------------------------------
@@ -68,7 +68,7 @@ VALUES  ('Trainers',        67,     11,         4),
         ('T-shirt',          5,     67,         4);
 
 
-GO;
+GO
 
 --SELECT TOP (1000) [Id]
 --      ,[Name]
