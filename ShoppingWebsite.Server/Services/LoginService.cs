@@ -26,7 +26,7 @@ namespace ShoppingWebsite.Server.Services
         {
             var parmeters = new { username };
             var loginInfo = await _db.QuerySingleOrDefaultAsync<UserLoginInfo>(
-                "ValidateLogin_sp",
+                "GetUserLoginInfo_sp",
                 parmeters,
                 commandType: CommandType.StoredProcedure);
 

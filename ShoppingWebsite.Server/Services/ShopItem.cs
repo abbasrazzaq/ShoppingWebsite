@@ -1,4 +1,4 @@
-﻿namespace ShoppingWebsite.Server
+﻿namespace ShoppingWebsite.Server.Services
 {
     public enum ShopItemCategory
     {

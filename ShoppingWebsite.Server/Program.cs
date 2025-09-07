@@ -43,7 +43,6 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.AddTransient<IDbConnection>(sp =>
     new SqlConnection(builder.Configuration.GetConnectionString("DefaultConnection")));
-builder.Services.AddScoped<WeatherForecastService>();
 builder.Services.AddScoped<LoginService>();
 builder.Services.AddScoped<ShopService>();
 builder.Services.AddScoped<CartService>();

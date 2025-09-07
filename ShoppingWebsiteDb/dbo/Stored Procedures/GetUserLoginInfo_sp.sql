@@ -1,5 +1,5 @@
 ﻿
-CREATE PROCEDURE [dbo].[ValidateLogin_sp]
+CREATE PROCEDURE [dbo].[GetUserLoginInfo_sp]
 	@username NVARCHAR(50)
 AS
 BEGIN

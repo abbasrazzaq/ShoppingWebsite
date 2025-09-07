@@ -65,9 +65,6 @@
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Tables\UserTable.sql" />
-    <Build Include="dbo\Tables\WeatherForecasts.sql" />
-    <Build Include="dbo\Stored Procedures\GetWeatherForecasts_sp.sql" />
-    <Build Include="dbo\Stored Procedures\ValidateLogin_sp.sql" />
     <Build Include="dbo\Tables\ShopItemTable.sql" />
     <Build Include="dbo\Tables\CategoryTable.sql" />
     <Build Include="dbo\Stored Procedures\getShopItems_sp.sql" />
@@ -76,5 +73,9 @@
     <Build Include="dbo\Stored Procedures\BuyItems_sp.sql" />
     <Build Include="dbo\User Defined Types\CartItemList.sql" />
     <Build Include="dbo\Stored Procedures\GetUserBankBalance_sp.sql" />
+    <Build Include="dbo\Stored Procedures\GetUserLoginInfo_sp.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <PostDeploy Include="Script.PostDeployment.sql" />
   </ItemGroup>
 </Project>
