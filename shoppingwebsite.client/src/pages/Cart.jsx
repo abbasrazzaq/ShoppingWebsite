@@ -6,12 +6,6 @@ import './Shop.css';
 import './Cart.css'
 
 function Cart({ cartItems, setCartItems, token }) {
-    // List all the items in your cart, including how many.
-    // Do a total of the cost.
-    // When clicking "Checkout", your balance goes down.
-
-    // Use the id to collect further info about the items
-
     const [loading, setLoading] = useState(true);
     const [cartList, setCartList] = useState([]);
     const [bankBalance, setBankBalance] = useState(null);
@@ -133,7 +127,6 @@ function Cart({ cartItems, setCartItems, token }) {
                             <img
                                 src={`/src/assets/items/${item.id}.png`}
                                 onError={(e) => e.target.src = '/src/assets/items/placeholder.jpg'}
-                                style={{ width: '100px' }}
                             >
                             </img>
                             <div className="item-details">

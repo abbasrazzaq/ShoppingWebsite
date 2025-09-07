@@ -96,17 +96,15 @@ function Shop({ cartItems, setCartItems, token }) {
                             setNameFilter(e.target.value);
                             setPageIndex(0);
                         }}
-                        style={{ marginRight: '0.5em' }}
                     />
-                    <label style={{ marginRight: '0.5em' }}>
+                    <label>
                         Show Categories:
                     </label>
 
-                    <span style={{ position: 'relative', display: 'inline-block', marginRight: '0.5em' }}>
+                    <span className="dropdown-wrap">
                         <button
                             ref={buttonRef}
                             onClick={() => setShowCategoryDropdown((prev) => !prev)}
-                            style={{ marginRight: '0.5em' }}
                         >
                             {categoryFilter.length === 0 ? 'All' : `${categoryFilter.length} Selected`}
                         </button>
@@ -114,16 +112,7 @@ function Shop({ cartItems, setCartItems, token }) {
                         {showCategoryDropdown && (
                             <div
                                 ref={dropdownRef}
-                                style={{
-                                    position: 'absolute',
-                                    top: '100%',
-                                    left: 0,
-                                    backgroundColor: 'rgba(255 255 255 1)',
-                                    border: '1px solid #ccc',
-                                    padding: '0.5em',
-                                    zIndex: 1000,
-                                    minWidth: '150px',
-                                }}
+                                className="dropdown-content"
                             >
                                 {categoriesFilter.map((category) => (
                                     <div key={category.id}>
@@ -152,7 +141,6 @@ function Shop({ cartItems, setCartItems, token }) {
                             setPriceFilter(e.target.value);
                             setPageIndex(0);
                         }}
-                        style={{ marginRight: '0.5em' }}
                     />
                     <input
                         type="number"
@@ -167,7 +155,7 @@ function Shop({ cartItems, setCartItems, token }) {
                 <div className="filters">
                     <button onClick={() => setPageIndex((prev) => Math.max(prev - 1, 0))}
                         disabled={pageIndex === 0}
-                        style={{ marginRight: '0.5em' }} >
+                    >
                         Previous
                     </button>
                     <span>{pageIndex + 1} / {pageCount}</span>
@@ -189,7 +177,6 @@ function Shop({ cartItems, setCartItems, token }) {
                                 <img
                                     src={`/src/assets/items/${item.id}.png`}
                                     onError={(e) => e.target.src = '/src/assets/items/placeholder.jpg'}
-                                    style={{ width: '100px' }}
                                 >
                                 </img>
                                 <div className="item-details">
