@@ -1,0 +1,37 @@
+
+/* Totals */
+.cart-content-h3 {
+    font-size: 1.2rem;
+    margin: 0.5rem 0;
+}
+
+.cart-content-h4 {
+    font-size: 1rem;
+    color: darkolivegreen;
+    margin-top: 1rem;
+}
+
+/* Buy button */
+.cart-content-button:last-of-type {
+    margin-top: 2rem;
+    padding: 0.75rem 1.5rem;
+    background: #ff0055;
+    color: #fff;
+    border: none;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.cart-content-button:last-of-type:hover {
+    transform: scale(1.05);
+}
+
+.cart-content-button:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+}

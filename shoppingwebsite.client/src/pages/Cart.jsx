@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast'
 import apiFetch from '../services/api'
+import './Shop.css';
+import './Cart.css'
 
 function Cart({ cartItems, setCartItems, token }) {
     // List all the items in your cart, including how many.
@@ -122,30 +124,42 @@ function Cart({ cartItems, setCartItems, token }) {
     }
 
     return (
-        <div>
-            <h2>Cart</h2>
-            <ul>
-                {cartList.map((item) => (
-                    <li key={item.id}>
-                        <img
-                            src={`/src/assets/items/${item.id}.png`}
-                            onError={(e) => e.target.src = '/src/assets/items/placeholder.jpg'}
-                            style={{ width: '100px' }}
-                        >
-                        </img>
-                        {item.name} - Count: {cartItems[item.id]}
-                        <button onClick={() => removeItemFromCart(item.id, setCartItems) }>Remove</button>
-                    </li>
-                ))}
-            </ul>
-            <h3>Cart Total: ${itemsTotal}</h3>
-            <h3>Your Balance: ${bankBalance}</h3>
+        <div className="shop-wrap">
+            <div className="shop-content">
+                <h2>Cart</h2>
+                <ul className="item-list">
+                    {cartList.map((item) => (
+                        <li key={item.id}>
+                            <img
+                                src={`/src/assets/items/${item.id}.png`}
+                                onError={(e) => e.target.src = '/src/assets/items/placeholder.jpg'}
+                                style={{ width: '100px' }}
+                            >
+                            </img>
+                            <div className="item-details">
+                                {item.name}
+                                <div>
+                                    Count: {cartItems[item.id]}
+                                </div>
+                            </div>
+                            
+                            <button onClick={() => removeItemFromCart(item.id, setCartItems)}>Remove</button>
+                        </li>
+                    ))}
+                </ul>
+                <h3 className="cart-content-h3">Cart Total: ${itemsTotal}</h3>
+                <h3 className="cart-content-h4">Your Balance: ${bankBalance}</h3>
 
-            {(itemsTotal > bankBalance) && (
-                <h4 style={{ color: "red" } }>Not enough balance!</h4>
-            )}
+                {(itemsTotal > bankBalance) && (
+                    <h4 style={{ color: "red" }}>Not enough balance!</h4>
+                )}
 
-            <button disabled={(itemsTotal > bankBalance) || cartList.length < 1} onClick={() => { buyItems(); }}>Buy Items!</button>
+                <button className="cart-content-button"
+                    disabled={(itemsTotal > bankBalance) || cartList.length < 1}
+                    onClick={() => { buyItems(); }}>
+                    Buy Items!
+                </button>
+            </div>
         </div>
        
     );
