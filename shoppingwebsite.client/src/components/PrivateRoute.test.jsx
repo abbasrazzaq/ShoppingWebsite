@@ -14,4 +14,16 @@ describe('PrivateRoute', () => {
 
         expect(screen.getByText('Protected Content')).toBeInTheDocument();
     });
+
+    it('redirects to "/" when token is missing', () => {
+        render(
+            <MemoryRouter initialEntries={['/protected']}>
+                <PrivateRoute token={null}>
+                    <div>Protected Content</div>
+                </PrivateRoute>
+            </MemoryRouter>
+        );
+
+        expect(window.location.pathname).toBe('/');
+    });
 });
