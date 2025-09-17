@@ -71,7 +71,7 @@ stages:
         )
       displayName: "Debug check dist"
 
-    - task: PublishPipelineArtifact@0
+    - task: PublishPipelineArtifact@1
       inputs:
         targetPath: '$(Build.SourcesDirectory)/shoppingwebsite.client/dist'
         artifact: 'frontend-dist'
