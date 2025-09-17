@@ -12,7 +12,7 @@ trigger:
 pool:
   name: Default
   demands:
-    -agent.name -equals ABBAS-THINKPAD
+    - agent.name -equals ABBAS-THINKPAD
 
 variables:
   buildConfiguration: 'Release'
