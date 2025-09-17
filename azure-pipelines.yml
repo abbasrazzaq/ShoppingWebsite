@@ -32,14 +32,48 @@ stages:
     - task: NodeTool@0
       inputs:
         versionSpec: '$(nodeVersion)'
+    # Step A: list the client folder contents before anything
     - script: |
-          npm ci
-          npm run build
-      displayName: 'Build shoppingwebsite.client'
+        echo "Client folder listing before npm install"
+        dir "$(Build.SourcesDirectory)/shoppingwebsite.client"
+      displayName: 'Debug list client folder'
+
+    # Step B: Run npm ci on its own to catch install errors
+    - script: |
+        echo "Running npm ci"
+        npm ci
+      displayName: 'npm ci'
       workingDirectory: '$(Build.SourcesDirectory)/shoppingwebsite.client'
+
+    # Step C: Show the bin folder so we can verify vite.cmd is present
+    - script: |
+        echo "node_modules bin contents"
+        dir "$(Build.SourcesDirectory)/shoppingwebsite.client/node_modules/.bin"
+      displayName: 'Debug show bin folder'
+      workingDirectory: '$(Build.SourcesDirectory)/shoppingwebsite.client'
+
+    # Step D: Run the build separately so any errors are surfaced
+    - script: |
+        echo "Running npm run build"
+        npm run build
+      displayName: 'npm run build'
+      workingDirectory: '$(Build.SourcesDirectory)/shoppingwebsite.client'
+
+    # Step E: Verify that dist was created
+    - script: |
+        echo "=== Post-build dist check ==="
+        if exist "$(Build.SourcesDirectory)/shoppingwebsite.client/dist" (
+        echo "dist folder found:"
+        dir "$(Build.SourcesDirectory)/shoppingwebsite.client/dist"
+        ) else (
+        echo "NO dist FOLDER FOUND!"
+        exit 1
+        )
+      displayName: "Debug check dist"
 
     - task: PublishPipelineArtifact@0
       inputs:
         targetPath: '$(Build.SourcesDirectory)/shoppingwebsite.client/dist'
         artifact: 'frontend-dist'
 
+                
