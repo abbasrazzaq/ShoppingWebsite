@@ -4,16 +4,42 @@
 # https://aka.ms/yaml
 
 trigger:
-- master
+  branches:
+    include:
+      - master
+      - develop
 
 pool:
-  vmImage: ubuntu-latest
+  name: Default
+  demands:
+    -agent.name -equals ABBAS-THINKPAD
 
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+variables:
+  buildConfiguration: 'Release'
+  nodeVersion: '20.x'
+  dotnetVersion: '8.0.x'
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+stages:
+- stage: Build
+  displayName: 'Build & Publish ShoppingWebsite'
+  jobs:
+  - job: Build_Frontend
+    displayName: 'Build ShoppingWebsite.client (Vite)'
+
+    steps:
+    - checkout: self
+  
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '$(nodeVersion)'
+      - script: |
+          npm ci
+          npm run build
+      displayName: 'Build shoppingwebsite.client'
+      workingDirectory: '$(Build.SourcesDirectory)/shoppingwebsite.client'
+
+    - task: PublishPipelineArtifact@0
+      inputs:
+        targetPath: '$(Build.SourcesDirectory)/shoppingwebsite.client'
+        artifact: 'frontend-dist'
+
