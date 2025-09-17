@@ -33,11 +33,18 @@ stages:
       inputs:
         versionSpec: '$(nodeVersion)'
 
-    - script: |
-        npm ci
-        npm run build
+    - task: Npm@1
+      inputs:
+        command: 'custom'
+        workingDir: '$(Build.SourcesDirectory)/shoppingwebsite.client'
+        customCommand: 'ci && npm run build'
       displayName: 'Install and build client'
-      workingDirectory: '$(Build.SourcesDirectory)/shoppingwebsite.client'
+
+    # - script: |
+    #     npm ci
+    #     npm run build
+    #   displayName: 'Install and build client'
+    #   workingDirectory: '$(Build.SourcesDirectory)/shoppingwebsite.client'
 
     - task: PublishPipelineArtifact@1
       inputs:
