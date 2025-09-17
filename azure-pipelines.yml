@@ -32,7 +32,7 @@ stages:
     - task: NodeTool@0
       inputs:
         versionSpec: '$(nodeVersion)'
-      - script: |
+    - script: |
           npm ci
           npm run build
       displayName: 'Build shoppingwebsite.client'
