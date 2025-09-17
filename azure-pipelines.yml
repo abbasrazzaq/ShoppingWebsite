@@ -33,22 +33,21 @@ stages:
       inputs:
         versionSpec: '$(nodeVersion)'
 
-    - task: Npm@1
-      inputs:
-        command: 'custom'
-        workingDir: '$(Build.SourcesDirectory)/shoppingwebsite.client'
-        customCommand: 'ci && npm run build'
-      displayName: 'Install and build client'
+    - script: |
+        echo "Running npm ci"
+        npm ci
+      displayName: 'npm ci'
+      workingDirectory: '$(Build.SourcesDirectory)/shoppingwebsite.client'
 
-    # - script: |
-    #     npm ci
-    #     npm run build
-    #   displayName: 'Install and build client'
-    #   workingDirectory: '$(Build.SourcesDirectory)/shoppingwebsite.client'
+    - script: |
+        echo "Running npm run build"
+        npm run build
+      displayName: 'npm run build'
+      workingDirectory: '$(Build.SourcesDirectory)/shoppingwebsite.client'
 
     - task: PublishPipelineArtifact@1
       inputs:
         targetPath: '$(Build.SourcesDirectory)/shoppingwebsite.client/dist'
-        artifactName: 'frontend-dist'
+        artifact: 'frontend-dist'
 
                 
