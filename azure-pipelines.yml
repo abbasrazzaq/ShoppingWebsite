@@ -33,19 +33,10 @@ stages:
       inputs:
         versionSpec: '$(nodeVersion)'
 
-    # Step B: Run npm ci on its own to catch install errors
     - script: |
-        echo "Running npm ci"
         npm ci
-      displayName: 'npm ci'
-      workingDirectory: '$(Build.SourcesDirectory)/shoppingwebsite.client'
-
-
-    # Step D: Run the build separately so any errors are surfaced
-    - script: |
-        echo "Running npm run build"
         npm run build
-      displayName: 'npm run build'
+      displayName: 'Install and build client'
       workingDirectory: '$(Build.SourcesDirectory)/shoppingwebsite.client'
 
     - task: PublishPipelineArtifact@1
