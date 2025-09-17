@@ -42,6 +42,6 @@ stages:
     - task: PublishPipelineArtifact@1
       inputs:
         targetPath: '$(Build.SourcesDirectory)/shoppingwebsite.client/dist'
-        artifact: 'frontend-dist'
+        artifactName: 'frontend-dist'
 
                 
