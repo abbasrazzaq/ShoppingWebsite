@@ -100,5 +100,32 @@ stages:
         targetPath: '$(Build.ArtifactStagingDirectory)/db'
         artifact: db-publish
 
+- stage: Deploy
+  displayName: Deploy shopping website to Azure
+  dependsOn: Build
+  jobs:
+    - deployment: Deploy_WebApp
+      displayName: Deploy to Azure App Service
+      environment: 'production'
+      pool:
+        vmImage: 'windows-latest'
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+              - download: current
+                artifact: 'server-publish'
+              - download: current
+                artifact: 'frontend-dist'
+
+                # TODO: Task for db deployment
+
+              - task: AzureWebApp@1
+                displayName: 'Deploy Backend'
+                inputs:
+                  azureSubscription: 'azure-rg-connection'
+                  appName: 'shoppingwebsite'
+                  package: '$(Pipeline.Workspace)/server-publish/ShoppingWebsite.Server.zip'
+
 
                 
