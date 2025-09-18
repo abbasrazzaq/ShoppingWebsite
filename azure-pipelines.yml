@@ -49,5 +49,56 @@ stages:
       inputs:
         targetPath: '$(Build.SourcesDirectory)/shoppingwebsite.client/dist'
         artifact: 'frontend-dist'
+  - job: Build_Backend
+    displayName: 'Build & Publish ShoppingWebsite (ASP.NET Core) & Database'
+    dependsOn: Build_Frontend
+
+    steps:
+    - checkout: self
+  
+    - task: UseDotNet@2
+      inputs:
+        packageType: sdk
+        version: '$(dotnetVersion)'
+
+    - task: DotNetCoreCLI@2
+      displayName: 'Restore NuGet Packages'
+      inputs:
+        command: restore
+        projects: '**/ShippingWebsite.Server/*.csproj'
+
+    - task: VSBuild@1
+      displayName: Build solution
+      inputs:
+        solution: '**/ShoppingWebsite.sln'
+        msbuildArgs: '/p:Configuration=$(buildConfiguration)'
+
+    - task: DotNetCoreCLI@2
+      displayName: 'Publish ShoppingWebsite.Server'
+      inputs:
+        command: publish
+        projects: 'ShoppingWebsite.Server/ShoppingWebsite.Server.csproj'
+        arguments: >
+          --configuration $(buildConfiguration)
+          --output $(Build.ArtifactStagingDirectory)/server-publish
+
+    - task: VSBuild@1
+      displayName: 'Build ShoppingWebsiteDb (DACPAC)'
+      inputs:
+        solution: 'ShoppingWebsiteDb/ShoppingWebsiteDb.sqlproj'
+        msBuildArgs: '/p:Configuration=$(buildConfiguration) /p:OutDir=$(Build.ArtifactStagingDirectory)/db/'
+
+    - task: PublishPipelineArtifact@1
+      displayName: Publish Backend Artifact
+      inputs:
+        targetPath: '$(Build.ArtifactStagingDirectory)/server-publish'
+        artifact: 'server-publish'
+
+    - task: PublishPipelineArtifact@1
+      displayName: Publish DACPAC Artifact
+      inputs:
+        targetPath: '$(Build.ArtifactStagingDirectory)/db'
+        artifact: db-publish
+
 
                 
