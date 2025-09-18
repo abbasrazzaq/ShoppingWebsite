@@ -65,7 +65,7 @@ stages:
       displayName: 'Restore NuGet Packages'
       inputs:
         command: restore
-        projects: '**/ShippingWebsite.Server/*.csproj'
+        projects: '**/ShoppingWebsite.Server/*.csproj'
 
     - task: VSBuild@1
       displayName: Build solution
