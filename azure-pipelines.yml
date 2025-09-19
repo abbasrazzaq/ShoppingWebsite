@@ -117,8 +117,21 @@ stages:
                 artifact: 'server-publish'
               - download: current
                 artifact: 'frontend-dist'
+              - download: current
+                artifact: 'db-publish'
 
-                # TODO: Task for db deployment
+              - task: SqlAzureDacpacDeployment@1
+                displayName: 'Deploy shoppingwebsite db dacpac to Azure SQL'
+                inputs:
+                  azureSubscription: 'azure-rg-connection'
+                  AuthenticationType: 'server'
+                  ServerName: '$(DbServerName).database.windows.net'
+                  DatabaseName: 'shoppingwebsitedb'
+                  SqlUserName: '$(DbAdminUsername)'
+                  SqlPassword: '$(DbAdminPassword)'
+                  DacpacFile: '$(Pipeline.Workspace)/db-publish/WeatherApp.Db.dacpac'
+                  AdditionalArguments: '/p:BlockOnPossibleDataLoss=false'
+                  deployType: 'DacpacTask'
 
               - task: AzureWebApp@1
                 displayName: 'Deploy Backend'
