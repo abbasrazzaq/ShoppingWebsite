@@ -125,10 +125,10 @@ stages:
                 inputs:
                   azureSubscription: 'azure-rg-connection'
                   AuthenticationType: 'server'
-                  ServerName: '$(DbServerName).database.windows.net'
+                  ServerName: 'abbas-sql-server.database.windows.net'
                   DatabaseName: 'shoppingwebsitedb'
-                  SqlUserName: '$(DbAdminUsername)'
-                  SqlPassword: '$(DbAdminPassword)'
+                  SqlUserName: 'dbadmin'
+                  SqlPassword: 'YourP@ssword123'
                   DacpacFile: '$(Pipeline.Workspace)/db-publish/ShoppingWebsiteDb.dacpac'
                   AdditionalArguments: '/p:BlockOnPossibleDataLoss=false'
                   deployType: 'DacpacTask'
