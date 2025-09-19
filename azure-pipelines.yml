@@ -124,11 +124,11 @@ stages:
                 displayName: 'Deploy shoppingwebsite db dacpac to Azure SQL'
                 inputs:
                   azureSubscription: 'azure-rg-connection'
-                  AuthenticationType: 'server'
-                  ServerName: 'abbas-sql-server.database.windows.net'
+                  AuthenticationType: server
+                  ServerName: '$(sqlServerName).database.windows.net'
                   DatabaseName: 'shoppingwebsitedb'
-                  SqlUserName: 'dbadmin'
-                  SqlPassword: 'YourP@ssword123'
+                  SqlUserName: '$(sqlAdminUsername)'
+                  SqlPassword: '$(sqlAdminPassword)'
                   DacpacFile: '$(Pipeline.Workspace)/db-publish/ShoppingWebsiteDb.dacpac'
                   AdditionalArguments: '/p:BlockOnPossibleDataLoss=false'
                   deployType: 'DacpacTask'
