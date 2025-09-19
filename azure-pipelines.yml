@@ -129,7 +129,7 @@ stages:
                   DatabaseName: 'shoppingwebsitedb'
                   SqlUserName: '$(DbAdminUsername)'
                   SqlPassword: '$(DbAdminPassword)'
-                  DacpacFile: '$(Pipeline.Workspace)/db-publish/WeatherApp.Db.dacpac'
+                  DacpacFile: '$(Pipeline.Workspace)/db-publish/ShoppingWebsite.Db.dacpac'
                   AdditionalArguments: '/p:BlockOnPossibleDataLoss=false'
                   deployType: 'DacpacTask'
 
