@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast'
 import apiFetch from '../services/api'
-import imageUrlMap from '../services/imageMap'
+import { imageUrlMap } from '../services/imageMap'
 import './Shop.css';
 import './Cart.css'
 
