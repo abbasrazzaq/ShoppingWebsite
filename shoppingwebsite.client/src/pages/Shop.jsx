@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import apiFetch from '../services/api'
+import { imageUrlMap } from '../services/imageMap';
 import './Shop.css';
 
 function Shop({ cartItems, setCartItems, token }) {
@@ -171,14 +172,17 @@ function Shop({ cartItems, setCartItems, token }) {
 
                         const remainingStock = item.stock - (cartItems[item.id] || 0);
                         const outOfStock = remainingStock < 1;
+                        const imgFileName = `${item.id}.png`;
+                        const imgSrc = imageUrlMap[imgFileName] || imageUrlMap['placeholder.png'];
 
                         return (
                             <li key={item.id}>
                                 <img
-                                    src={`/src/assets/items/${item.id}.png`}
-                                    onError={(e) => e.target.src = '/src/assets/items/placeholder.jpg'}
+                                    src={imgSrc}
+                                    alt={item.name}
                                 >
                                 </img>
+                                
                                 <div className="item-details">
                                     {item.name} - ${item.price.toFixed(2)}.
                                     <div>{outOfStock ? <span className="out-of-stock">Out of Stock</span> : `${remainingStock} Left`}</div>

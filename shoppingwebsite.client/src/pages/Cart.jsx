@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast'
 import apiFetch from '../services/api'
+import imageUrlMap from '../services/imageMap'
 import './Shop.css';
 import './Cart.css'
 
@@ -125,8 +126,7 @@ function Cart({ cartItems, setCartItems, token }) {
                     {cartList.map((item) => (
                         <li key={item.id}>
                             <img
-                                src={`/src/assets/items/${item.id}.png`}
-                                onError={(e) => e.target.src = '/src/assets/items/placeholder.jpg'}
+                                src={imageUrlMap[`${item.id}.png`] || imageUrlMap['placeholder.png']}
                             >
                             </img>
                             <div className="item-details">
