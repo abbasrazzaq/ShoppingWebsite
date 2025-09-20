@@ -49,7 +49,7 @@ GO
 --3	DIY
 --4	Clothing
 
-IF EXISTS ( SELECT 1 FROM [dbo].[ShopItemTable] )
+IF NOT EXISTS ( SELECT 1 FROM [dbo].[ShopItemTable] )
 BEGIN
 
 INSERT INTO [dbo].[ShopItemTable]
