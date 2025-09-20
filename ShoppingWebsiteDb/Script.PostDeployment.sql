@@ -14,20 +14,26 @@ Post-Deployment Script Template
 -------------------------------------------------
 ------------------ CategoryTable ----------------
 -------------------------------------------------
+IF NOT EXISTS ( SELECT 1 FROM [dbo].[CategoryTable] WHERE Id = 0 )
+BEGIN
 INSERT INTO [dbo].[CategoryTable] (Id, Category)
 VALUES	(0, 'Misc'),
 		(1, 'Books'),
 		(2, 'Groceries'),
 		(3, 'DIY'),
 		(4, 'Clothing');
+END
 
 GO
 
 -------------------------------------------------
 ------------------- UserTable -------------------
 -------------------------------------------------
+IF NOT EXISTS( SELECT 1 FROM [dbo].[UserTable] WHERE Username = 'abbas' )
+BEGIN
 INSERT INTO [dbo].[UserTable] (Username, Password, BankBalance)
 VALUES('abbas', 'AQAAAAIAAYagAAAAEGJeeVmBscPi6v5BVRsEV2Hwl3JvP/EHcm1irDrpkSXV4sfYaTdpTIksQ6TD9mfLgQ==', 1500);
+END
 
 GO
 -------------------------------------------------
@@ -42,6 +48,9 @@ GO
 --2	Groceries
 --3	DIY
 --4	Clothing
+
+IF EXISTS ( SELECT 1 FROM [dbo].[ShopItemTable] )
+BEGIN
 
 INSERT INTO [dbo].[ShopItemTable]
 VALUES  ('Trainers',        67,     11,         4),
@@ -66,7 +75,7 @@ VALUES  ('Trainers',        67,     11,         4),
         ('Spanner',          5,     25,         3),
         ('1984',             8.7,   13,         1),
         ('T-shirt',          5,     67,         4);
-
+END
 
 GO
 
