@@ -16,6 +16,7 @@ Post-Deployment Script Template
 -------------------------------------------------
 IF NOT EXISTS ( SELECT 1 FROM [dbo].[CategoryTable] WHERE Id = 0 )
 BEGIN
+DBCC CHECKIDENT('ShopItemTable', RESEED, 0);
 INSERT INTO [dbo].[CategoryTable] (Id, Category)
 VALUES	(0, 'Misc'),
 		(1, 'Books'),
@@ -41,17 +42,11 @@ GO
 ---------------------------------------------------------
 --------------------- ShopItemTable ---------------------
 ---------------------------------------------------------
---DBCC CHECKIDENT('ShopItemTable', RESEED, 0);
 
---0	Misc
---1	Books
---2	Groceries
---3	DIY
---4	Clothing
 
 IF NOT EXISTS ( SELECT 1 FROM [dbo].[ShopItemTable] )
 BEGIN
-
+DBCC CHECKIDENT('ShopItemTable', RESEED, 0);
 INSERT INTO [dbo].[ShopItemTable]
 VALUES  ('Trainers',        67,     11,         4),
         ('Hammer',          34,     19,         3),
