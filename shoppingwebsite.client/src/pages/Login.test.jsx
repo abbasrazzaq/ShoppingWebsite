@@ -17,6 +17,33 @@ vi.mock('react-router-dom', async () => {
 });
 
 describe('Login', () => {
+    it('unsuccessful login displays error message', async () => {
+        global.fetch = vi.fn().mockResolvedValue({
+            ok: true,
+            json: async () => ({
+                success: false
+            })
+        });
+
+        render(
+            <MemoryRouter>
+                <Login setToken={() => { }} />
+            </MemoryRouter>
+        );
+
+        // Fill in username and password
+        await userEvent.type(screen.getByLabelText(/USERNAME/i), 'user');
+        await userEvent.type(screen.getByLabelText(/PASSWORD/i), 'pass');
+
+        // Click login
+        await userEvent.click(screen.getByRole('button', { name: /login/i }))
+
+        // Assert error message is displayed
+        await waitFor(() => {
+            expect(screen.getByText(/Login failed: invalid credentials/i)).toBeInTheDocument();
+        });
+    });
+
     it('successful login calls setToken and navigates to /shop', async () => {
         const mockSetToken = vi.fn();
         const fakeToken = 'fake-token';
