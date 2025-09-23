@@ -11,6 +11,16 @@ function Login({ setToken }) {
     const handleLogin = async (e) => {
         e.preventDefault();
 
+        if (!username.trim()) {
+            setError('Username is required');
+            return;
+        }
+        if (!password.trim()) {
+            setError('Password is required');
+            return;
+        }
+        setError('');
+
         try {
             const response = await fetch('/api/auth/login', {
                 method: 'POST',
