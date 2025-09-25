@@ -6,3 +6,4 @@
 - JWT authorisation.
 - Vite tests.
 - Builds & Deploys on Azure: https://shoppingwebsite-gwa8bhhcd6h3efbt.ukwest-01.azurewebsites.net/
+- - Test
