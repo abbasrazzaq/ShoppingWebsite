@@ -19,13 +19,28 @@ variables:
   nodeVersion: '20.x'
   dotnetVersion: '8.0.x'
 
+  # Container settings
+  registryName: shoppingwebsiteacr
+  imageName: shoppingwebsite
+  containerAppName: shoppingwebsite-app
+  resourceGroup: azuregroup1
+  containerEnv: shoppingwebsite-env
+
+  # Key Vault settings
+  vaultName: ShoppingWebsiteSqlConn
+  secretName: ShoppingWebsiteSqlConnectionString
+
 stages:
+
+# -------------------------------------------------------------
+# 1. Build the Frontend (Vite) and Backend (ASP.NET + DACPAC)
+# -------------------------------------------------------------
 - stage: Build
   displayName: 'Build & Publish ShoppingWebsite'
   jobs:
+
   - job: Build_Frontend
     displayName: 'Build ShoppingWebsite.client (Vite)'
-
     steps:
     - checkout: self
   
@@ -49,10 +64,10 @@ stages:
       inputs:
         targetPath: '$(Build.SourcesDirectory)/shoppingwebsite.client/dist'
         artifact: 'frontend-dist'
+
   - job: Build_Backend
     displayName: 'Build & Publish ShoppingWebsite (ASP.NET Core) & Database'
     dependsOn: Build_Frontend
-
     steps:
     - checkout: self
   
@@ -100,45 +115,67 @@ stages:
         targetPath: '$(Build.ArtifactStagingDirectory)/db'
         artifact: db-publish
 
-- stage: Deploy
-  displayName: Deploy shopping website to Azure
+# -------------------------------------------------------------
+# 2. Build & Push Docker Image to ACR
+# -------------------------------------------------------------
+- stage: Container
+  displayName: 'Build & Push Docker Image'
   dependsOn: Build
   jobs:
-    - deployment: Deploy_WebApp
-      displayName: Deploy to Azure App Service
-      environment: 'production'
+  - job: Build_Container
+    displayName: 'Build & Push Container'
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - checkout: self
+  
+    - task: AzureCLI@2
+      displayName: 'Login to ACR & Build Image'
+      inputs:
+        azureSubscription: 'azure-rg-connection'
+        scriptType: bash
+        scriptLocation: inlineScript
+        inlineScript: |
+          echo "Logging into ACR $(registryName)"
+          az acr login --name $(registryName)
+
+          echo "Building Docker image"
+          docker build \
+            -t $(registryName).azurecr.io/$(imageName):$(Build.BuildId) \
+            -f $(Build.SourcesDirectory)/Dockerfile \
+            $(Build.SourcesDirectory)
+
+          echo "Pushing image to ACR"
+          docker push $(registryName).azurecr.io/$(imageName):$(Build.BuildId)
+
+# -------------------------------------------------------------
+# 3. Deploy to Azure Container Apps with Key Vault Secret
+# -------------------------------------------------------------
+- stage: Deploy
+  displayName: 'Deploy ShoppingWebsite to Container App'
+  dependsOn: Container
+  jobs:
+    - job: Deploy_ContainerApp
       pool:
-        vmImage: 'windows-latest'
-      strategy:
-        runOnce:
-          deploy:
-            steps:
-              - download: current
-                artifact: 'server-publish'
-              - download: current
-                artifact: 'frontend-dist'
-              - download: current
-                artifact: 'db-publish'
+        vmImage: 'ubuntu-latest'
+      steps:
+      - task: AzureCLI@2
+        displayName: 'Deploy Container App'
+        inputs:
+          azureSubscription: 'azure-rg-conection'
+          scriptType: bash
+          scriptLocation: inlineScript
+          inlineScript: |
+            echo "Fetching DB connection string from Key Vault"
+            export DBCONN=$(az keyvault secret show \
+              --vault-name $(vaultName) \
+              --name $(secretName) \
+              --query value -o tsv)
 
-              - task: SqlAzureDacpacDeployment@1
-                displayName: 'Deploy shoppingwebsite db dacpac to Azure SQL'
-                inputs:
-                  azureSubscription: 'azure-rg-connection'
-                  AuthenticationType: server
-                  ServerName: '$(sqlServerName).database.windows.net'
-                  DatabaseName: 'shoppingwebsitedb'
-                  SqlUserName: '$(sqlAdminUsername)'
-                  SqlPassword: '$(sqlAdminPassword)'
-                  DacpacFile: '$(Pipeline.Workspace)/db-publish/ShoppingWebsiteDb.dacpac'
-                  AdditionalArguments: '/p:BlockOnPossibleDataLoss=false'
-                  deployType: 'DacpacTask'
-
-              - task: AzureWebApp@1
-                displayName: 'Deploy Backend'
-                inputs:
-                  azureSubscription: 'azure-rg-connection'
-                  appName: 'shoppingwebsite'
-                  package: '$(Pipeline.Workspace)/server-publish/ShoppingWebsite.Server.zip'
-
-
-                
+            echo "Updating Container App image and secrets"
+            az containerapp update \
+              --name $(containerAppName) \
+              --resource-group $(resourceGroup) \
+              --image $(registryName).azurecr.io/$(imageName):$(Build.BuildId) \
+              --secrets $(secretName)="$DBCONN" \
+              --env-vars DefaultConnection="secretref:$(secretName)"

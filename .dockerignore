@@ -1,0 +1,9 @@
+**/bin
+**/obj
+**/node_modules
+**/*.user
+**/*.vs
+.git
+.gitignore
+azure-pipelines.yml
+README.md
