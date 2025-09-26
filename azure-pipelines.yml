@@ -162,7 +162,7 @@ stages:
       - task: AzureCLI@2
         displayName: 'Deploy Container App'
         inputs:
-          azureSubscription: 'azure-rg-conection'
+          azureSubscription: 'azure-rg-connection'
           scriptType: bash
           scriptLocation: inlineScript
           inlineScript: |
