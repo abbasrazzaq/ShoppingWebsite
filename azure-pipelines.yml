@@ -28,7 +28,7 @@ variables:
 
   # Key Vault settings
   vaultName: ShoppingWebsiteSqlConn
-  secretName: ShoppingWebsiteSqlConnectionString
+  secretName: shoppingwebsite-sqlconnectionstring
 
 stages:
 
