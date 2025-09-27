@@ -170,7 +170,7 @@ stages:
 
             echo "Updating Container App image and configuring Key Vault secret reference"
 
-            az extension add --name containerapp --upgrade || true
+            az extension add --name containerapp --upgrade --yes || true
 
             az containerapp update \
                 --name $(containerAppName) \
