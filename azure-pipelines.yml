@@ -169,12 +169,18 @@ stages:
             set -euo pipefail
 
             echo "Updating Container App image and configuring Key Vault secret reference"
-
+            az upgrade --yes
+            az extension remove --name containerapp || true
             az extension add --name containerapp --upgrade --yes || true
+
+            echo "Setting Key Vault secret reference in Container App"
+            az containerapp secret set \
+                --name $(containerAppName) \
+                --resource-group $(resourceGroup) \
+                --secrets $(secretName)=keyvaultref:https://$(vaultName).vault.azure.net/secrets/$(secretName),identityref:system
 
             az containerapp update \
                 --name $(containerAppName) \
                 --resource-group $(resourceGroup) \
                 --image $(registryName).azurecr.io/$(imageName):$(Build.BuildId) \
-                --secrets $(secretName)=keyvaultref:https://$(vaultName).vault.azure.net/secrets/$(secretName),identityref:system \
-                --env-vars DefaultConnection=secretref:$(secretName)
+                --set-env-vars DefaultConnection=secretref:$(secretName)
