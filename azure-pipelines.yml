@@ -160,7 +160,7 @@ stages:
         vmImage: 'ubuntu-latest'
       steps:
       - task: AzureCLI@2
-        displayName: 'Deploy Container App'
+        displayName: 'Register Microsoft.App provider if needed'
         inputs:
           azureSubscription: 'azure-rg-connection'
           scriptType: bash
@@ -168,7 +168,27 @@ stages:
           inlineScript: |
             set -euo pipefail
 
+            echo "Checking Microsoft.App provider registration"
+            state=$(az provider show --n Microsoft.App --query "registrationState" -o tsv)
+
+            if [ "$state" != "Registered" ]; then
+              echo "Registering Microsoft.App provider"
+              az provider register -n Microsoft.App --wait
+            else
+              echo "Microsoft.App provider already registered"
+            fi
+      
+      - task : AzureCLI@2
+        displayName: 'Deploy Container App'
+        inputs:
+          azureSubscription: 'azure-rg-connection'
+          scriptType: base
+          scriptLocation: inlineScript
+          inlineScript: |
+            set -euo pipefail
+
             echo "Updating Container App image and configuring Key Vault secret reference"
+
             az upgrade --yes
             az extension remove --name containerapp || true
             az extension add --name containerapp --upgrade --yes || true
