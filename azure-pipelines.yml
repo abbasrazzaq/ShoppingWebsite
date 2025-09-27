@@ -166,16 +166,15 @@ stages:
           scriptType: bash
           scriptLocation: inlineScript
           inlineScript: |
-            echo "Fetching DB connection string from Key Vault"
-            export DBCONN=$(az keyvault secret show \
-              --vault-name $(vaultName) \
-              --name $(secretName) \
-              --query value -o tsv)
+            set -euo pipefail
 
-            echo "Updating Container App image and secrets"
+            echo "Updating Container App image and configuring Key Vault secret reference"
+
+            az extension add --name containerapp --upgrade || true
+
             az containerapp update \
-              --name $(containerAppName) \
-              --resource-group $(resourceGroup) \
-              --image $(registryName).azurecr.io/$(imageName):$(Build.BuildId) \
-              --secrets $(secretName)="$DBCONN" \
-              --env-vars DefaultConnection="secretref:$(secretName)"
+                --name $(containerAppName) \
+                --resource-group $(resourceGroup) \
+                --image $(registryName).azurecr.io/$(imageName):$(Build.BuildId) \
+                --secrets $(secretName)=keyvaultref:https://$(vaultName).vault.azure.net/secrets/$(secretName),identityref:system \
+                --env-vars DefaultConnection=secretref:$(secretName)
