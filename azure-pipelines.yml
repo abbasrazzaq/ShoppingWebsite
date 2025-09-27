@@ -182,7 +182,7 @@ stages:
         displayName: 'Deploy Container App'
         inputs:
           azureSubscription: 'azure-rg-connection'
-          scriptType: base
+          scriptType: bash
           scriptLocation: inlineScript
           inlineScript: |
             set -euo pipefail
