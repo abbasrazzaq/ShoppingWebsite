@@ -5,8 +5,6 @@ WORKDIR /src/shoppingwebsite.client
 # Install dependencies
 COPY shoppingwebsite.client/package*.json ./
 RUN npm ci
-
-# Build production assets
 COPY shoppingwebsite.client/ .
 RUN npm run build
 
@@ -15,14 +13,16 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-backend
 WORKDIR /src
 
 # Copy solution & server project files
-COPY ShoppingWebsite.sln .
 COPY ShoppingWebsite.Server/ShoppingWebsite.Server.csproj ShoppingWebsite.Server/
-
-# Restore only the server project to leverage layer cache
 RUN dotnet restore ShoppingWebsite.Server/ShoppingWebsite.Server.csproj
 
-# Copy everything and publish
-COPY . .
+# Copy server source
+COPY ShoppingWebsite.Server/. ShoppingWebsite.Server/
+
+# Copy the built frontend assets into the server's wwwroot before publish
+COPY --from=build-frontend /src/shoppingwebsite.client/dist/ ShoppingWebsite.Server/wwwroot/
+
+# Publish the server
 RUN dotnet publish \
 		ShoppingWebsite.Server/ShoppingWebsite.Server.csproj \
 		-c Release \
@@ -34,9 +34,6 @@ WORKDIR /app
 
 # Copy published backend
 COPY --from=build-backend /app/publish .
-
-# Copy built frontend into wwwroot
-COPY --from=build-frontend /src/shoppingwebsite.client/dist ./wwwroot
 
 # Launch the ASP.NET Core app
 ENTRYPOINT ["dotnet", "ShoppingWebsite.Server.dll"]
