@@ -187,12 +187,18 @@ stages:
           inlineScript: |
             set -euo pipefail
 
-            echo "Updating Container App image and configuring Key Vault secret reference"
+            echo "Point extension installs at a writable folder"
+            # AZURE_CONFIG_DIR is set by the AzureCLI@2 task to a temp path
+            export AZURE_EXTENSION_DIR="${AZURE_CONFIG_DIR}/azcliextensions"
 
+
+            echo "Updating Container App image and configuring Key Vault secret reference"
             az upgrade --yes
-            az extension remove --name containerapp
+            az extension remove --name containerapp || true
             az extension add --name containerapp --upgrade --yes
-            az extension list --output table
+
+            echo "Verify containerapp extension is installed"
+            az extension list -o table
 
             echo "Setting Key Vault secret reference in Container App"
             az containerapp secret set \
