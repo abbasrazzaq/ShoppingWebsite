@@ -187,18 +187,11 @@ stages:
           inlineScript: |
             set -euo pipefail
 
-            echo "Point extension installs at a writable folder"
-            # AZURE_CONFIG_DIR is set by the AzureCLI@2 task to a temp path
-            export AZURE_EXTENSION_DIR="${AZURE_CONFIG_DIR}/azcliextensions"
-
-
             echo "Updating Container App image and configuring Key Vault secret reference"
+
             az upgrade --yes
             az extension remove --name containerapp || true
-            az extension add -n containerapp --upgrade --yes
-
-            echo "Verify containerapp extension is installed"
-            az extension list -o table
+            az extension add --name containerapp --upgrade --yes || true
 
             echo "Setting Key Vault secret reference in Container App"
             az containerapp secret set \
@@ -210,6 +203,4 @@ stages:
                 --name $(containerAppName) \
                 --resource-group $(resourceGroup) \
                 --image $(registryName).azurecr.io/$(imageName):$(Build.BuildId) \
-                --ingress external \
-                --target-port 80 \
                 --set-env-vars ConnectionStrings__DefaultConnection=secretref:$(secretName)
