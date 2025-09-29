@@ -203,4 +203,6 @@ stages:
                 --name $(containerAppName) \
                 --resource-group $(resourceGroup) \
                 --image $(registryName).azurecr.io/$(imageName):$(Build.BuildId) \
-                --set-env-vars DefaultConnection=secretref:$(secretName)
+                --ingress external \
+                --target-port 80 \
+                --set-env-vars ConnectionStrings__DefaultConnection=secretref:$(secretName)
