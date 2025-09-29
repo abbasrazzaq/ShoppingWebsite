@@ -203,4 +203,4 @@ stages:
                 --name $(containerAppName) \
                 --resource-group $(resourceGroup) \
                 --image $(registryName).azurecr.io/$(imageName):$(Build.BuildId) \
-                --set-env-vars ConnectionStrings__DefaultConnection=secretref:$(secretName)
+                --set-env-vars DefaultConnection=secretref:$(secretName)
