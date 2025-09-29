@@ -190,8 +190,9 @@ stages:
             echo "Updating Container App image and configuring Key Vault secret reference"
 
             az upgrade --yes
-            az extension remove --name containerapp || true
-            az extension add --name containerapp --upgrade --yes || true
+            az extension remove --name containerapp
+            az extension add --name containerapp --upgrade --yes
+            az extension list --output table
 
             echo "Setting Key Vault secret reference in Container App"
             az containerapp secret set \
