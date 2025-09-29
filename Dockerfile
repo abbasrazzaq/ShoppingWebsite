@@ -36,4 +36,5 @@ WORKDIR /app
 COPY --from=build-backend /app/publish .
 
 # Launch the ASP.NET Core app
-ENTRYPOINT ["dotnet", "ShoppingWebsite.Server.dll"]
+ENTRYPOINT ["dotnet", "ShoppingWebsite.Server.dll", "--urls", "http://0.0.0.0:80"]
+EXPOSE 80
