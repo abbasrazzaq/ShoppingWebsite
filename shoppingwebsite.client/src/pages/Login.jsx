@@ -54,11 +54,11 @@ function Login({ setToken }) {
                 <h1 className="title">Enter login details</h1>
                 <form onSubmit={handleLogin} className="login-form">
                     <label>
-                        <span>USERNAME</span>
+                        <span>Username</span>
                         <input name="username" value={username} onChange={(e) => setUsername(e.target.value)} />
                     </label>
                     <label>
-                        <span>PASSWORD</span>
+                        <span>Password</span>
                         <input name="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
                     </label>
                     {error && <div style={{ color: 'red' }}>{error}</div>}
