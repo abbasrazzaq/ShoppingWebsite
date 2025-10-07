@@ -203,4 +203,7 @@ stages:
                 --name $(containerAppName) \
                 --resource-group $(resourceGroup) \
                 --image $(registryName).azurecr.io/$(imageName):$(Build.BuildId) \
+                --cpu 0.25 \
+                --memory 0.5Gi \
+                --set template.scale.minReplicas=0 template.scale.maxReplicas=1 \
                 --set-env-vars ConnectionStrings__DefaultConnection=secretref:$(secretName)
